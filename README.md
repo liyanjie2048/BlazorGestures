@@ -1,6 +1,6 @@
 # Liyanjie.Blazor.Gestures
 
-Blazor手势
+Blazor手势识别
 
 - #### GestureArea
     声明手势区域，用于识别手势
