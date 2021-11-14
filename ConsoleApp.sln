@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{FC0A3420-01CB-4F1D-98BD-060B1DC5FA66}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BD758CF9-D5B8-494F-941A-1CA402BFFB3B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Liyanjie.Blazor.Gestures", "src\Liyanjie.Blazor.Gestures\Liyanjie.Blazor.Gestures.csproj", "{D556F1B8-5783-4E0C-86D2-6B5FBA226146}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Liyanjie.Blazor.Gestures.Sample.BlazorServer", "sample\Liyanjie.Blazor.Gestures.Sample.BlazorServer\Liyanjie.Blazor.Gestures.Sample.BlazorServer.csproj", "{4E69459B-D673-4B60-BF45-06622DAF471A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{65CAE47D-43E2-4A6F-B307-389D8FF3277A}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		LICENSE = LICENSE
+		liyanjie.net.256.png = liyanjie.net.256.png
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D556F1B8-5783-4E0C-86D2-6B5FBA226146}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D556F1B8-5783-4E0C-86D2-6B5FBA226146}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D556F1B8-5783-4E0C-86D2-6B5FBA226146}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D556F1B8-5783-4E0C-86D2-6B5FBA226146}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E69459B-D673-4B60-BF45-06622DAF471A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E69459B-D673-4B60-BF45-06622DAF471A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E69459B-D673-4B60-BF45-06622DAF471A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E69459B-D673-4B60-BF45-06622DAF471A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D556F1B8-5783-4E0C-86D2-6B5FBA226146} = {BD758CF9-D5B8-494F-941A-1CA402BFFB3B}
+		{4E69459B-D673-4B60-BF45-06622DAF471A} = {FC0A3420-01CB-4F1D-98BD-060B1DC5FA66}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E16ACE10-5DD9-48BF-AA96-44E78AB00C34}
+	EndGlobalSection
+EndGlobal

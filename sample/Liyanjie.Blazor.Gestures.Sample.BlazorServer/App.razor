@@ -1,0 +1,70 @@
+﻿@using System.Text.Json
+
+<GestureArea AllowMouseSimulation="@(true)">
+    <section style="height:100vh;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+        <h6 style="margin:0">Tap</h6>
+        <div>@tapdata</div>
+        <hr />
+        <h6 style="margin:0">LongPress</h6>
+        <div>@longpressdata</div>
+        <hr />
+        <h6 style="margin:0">Pan</h6>
+        <div>@pandata</div>
+        <hr />
+        <h6 style="margin:0">Swipe</h6>
+        <div>@swipedata</div>
+        <hr />
+        <h6 style="margin:0">Pinch</h6>
+        <div>@pinchdata</div>
+        <hr />
+        <h6 style="margin:0">Rotate</h6>
+        <div>@rotatedata</div>
+    </section>
+    <TapGestureRecognizer AllowDoubleTap="@(true)" OnTap="@(ShowTapData)" OnDoubleTap="@(ShowTapData)" />
+    <LongPressGestureRecognizer OnLongPress="@(ShowLongPressData)" />
+    <PanGestureRecognizer OnPan="@(ShowPanData)" />
+    <SwipeGestureRecognizer Direction="@(GestureDirection.Horizontal|GestureDirection.Vertical)" OnSwipe="@(ShowSwipeData)"
+                            OnSwipeUp="@(ShowSwipeData)" OnSwipeDown="@(ShowSwipeData)"
+                            OnSwipeLeft="@(ShowSwipeData)" OnSwipeRight="@(ShowSwipeData)" />
+    <PinchGestureRecognizer OnPinch="@(ShowPinchData)" OnPinchIn="@(ShowPinchData)" OnPinchOut="@(ShowPinchData)" />
+    <RotateGestureRecognizer OnRotate="@(ShowRotateData)" OnRotateLeft="@(ShowRotateData)" OnRotateRight="@(ShowRotateData)" />
+</GestureArea>
+
+@code {
+    string? tapdata;
+    void ShowTapData(GestureEventArgs e)
+    {
+        tapdata = $"{e.Type}-{e.GestureCount}-{e.GestureDuration}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
+        InvokeAsync(StateHasChanged);
+    }
+    string? longpressdata;
+    void ShowLongPressData(GestureEventArgs e)
+    {
+        longpressdata =  $"{e.Type}-{e.GestureCount}-{e.GestureDuration}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
+        InvokeAsync(StateHasChanged);
+    }
+    string? pandata;
+    void ShowPanData(GesturePanEventArgs e)
+    {
+        pandata =  $"{e.Type}-{e.GestureCount}-{e.GestureDuration}-{e.Direction}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
+        InvokeAsync(StateHasChanged);
+    }
+    string? swipedata;
+    void ShowSwipeData(GestureSwipeEventArgs e)
+    {
+        swipedata =  $"{e.Type}-{e.GestureCount}-{e.GestureDuration}-{e.Direction}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
+        InvokeAsync(StateHasChanged);
+    }
+    string? pinchdata;
+    void ShowPinchData(GesturePinchEventArgs e)
+    {
+        pinchdata =  $"{e.Type}-{e.GestureCount}-{e.GestureDuration}-{e.Scale}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
+        InvokeAsync(StateHasChanged);
+    }
+    string? rotatedata;
+    void ShowRotateData(GestureRotateEventArgs e)
+    {
+        rotatedata =  $"{e.Type}-{e.GestureCount}-{e.GestureDuration}-{e.AngleChange}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
+        InvokeAsync(StateHasChanged);
+    }
+}
