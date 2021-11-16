@@ -12,6 +12,7 @@
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool Active { get; set; } = true;
     [Parameter] public bool AllowMouseSimulation { get; set; }
 
     public bool GestureStart { get; set; }
@@ -27,6 +28,9 @@
 
     void TouchStart(TouchEventArgs e)
     {
+        if (!Active)
+            return;
+
         GestureStart = true;
         GestureStartTime = DateTime.Now;
         StartPoints = e.Touches;
@@ -35,17 +39,23 @@
     }
     void TouchMove(TouchEventArgs e)
     {
+        if (!Active)
+            return;
+
         CurrentPoints = e.Touches;
         GestureMoved?.Invoke(this, e);
     }
     void TouchEnd(TouchEventArgs e)
     {
+        if (!Active)
+            return;
+
         GestureEnded?.Invoke(this, e);
     }
 
     void MouseDown(MouseEventArgs e)
     {
-        if (AllowMouseSimulation)
+        if (Active && AllowMouseSimulation)
             TouchStart(new()
                 {
                     Type = "mousedown",
@@ -56,7 +66,7 @@
     }
     void MouseMove(MouseEventArgs e)
     {
-        if (AllowMouseSimulation)
+        if (Active && AllowMouseSimulation)
             TouchMove(new()
                 {
                     Type = "mousemove",
@@ -67,7 +77,7 @@
     }
     void MouseUp(MouseEventArgs e)
     {
-        if (AllowMouseSimulation)
+        if (Active && AllowMouseSimulation)
             TouchEnd(new()
                 {
                     Type = "mouseup",
@@ -80,7 +90,7 @@
     TouchPoint[] GetTouchPoint(MouseEventArgs e)
     {
 #if NET6_0_OR_GREATER
-        return new TouchPoint[]{ new() { ClientX = e.ClientX, ClientY = e.ClientY, PageX = e.PageX, PageY = e.PageY, ScreenX = e.ScreenX, ScreenY = e.ScreenY }};
+    return new TouchPoint[]{ new() { ClientX = e.ClientX, ClientY = e.ClientY, PageX = e.PageX, PageY = e.PageY, ScreenX = e.ScreenX, ScreenY = e.ScreenY }};
 #else
         return new TouchPoint[] { new() { ClientX = e.ClientX, ClientY = e.ClientY, ScreenX = e.ScreenX, ScreenY = e.ScreenY } };
 #endif

@@ -83,3 +83,36 @@ Blazor手势识别
                               OnDoubleTap="Your callback" />
     </GestureArea>
     ```
+- #### 自定义手势识别
+    ```csharp
+    public class CustomGestureRecognizer : ComponentBase
+    {
+        //Parent GestureArea node
+        [CascadingParameter] public GestureArea? GestureArea { get; set; }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            if (GestureArea is not null)
+            {
+                GestureArea.GestureStarted += GestureStarted;
+                GestureArea.GestureMoved += GestureMoved;
+                GestureArea.GestureEnded += GestureEnded;
+            }
+        }
+
+        void GestureStarted(object? sender, TouchEventArgs e)
+        {
+            //Your code
+        }
+        void GestureMoved(object? sender, TouchEventArgs e)
+        {
+            //Your code
+        }
+        void GestureEnded(object? sender, TouchEventArgs e)
+        {
+            //Your code
+        }
+    }
+    ```
