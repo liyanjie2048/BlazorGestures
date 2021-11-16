@@ -6,7 +6,8 @@ Blazor手势识别
     声明手势区域，用于识别手势
   - Usage
     ```html
-    <GestureArea AllowMouseSimulation="是否开启鼠标模拟，默认false">
+    <GestureArea Active="default true"  //Active
+                 AllowMouseSimulation="default false">  //是否开启鼠标模拟
         //ChildContent here
         //Recognizers here
     </GestureArea>
