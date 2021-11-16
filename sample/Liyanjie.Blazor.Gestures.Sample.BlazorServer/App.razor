@@ -20,7 +20,8 @@
         <h6 style="margin:0">Rotate</h6>
         <div>@rotatedata</div>
     </section>
-    <TapGestureRecognizer AllowDoubleTap="@(true)" OnTap="@(ShowTapData)" OnDoubleTap="@(ShowTapData)" />
+    <TapGestureRecognizer OnTap="@(ShowTapData)"
+                          AllowDoubleTap="@(true)" OnDoubleTap="@(ShowTapData)" />
     <LongPressGestureRecognizer OnLongPress="@(ShowLongPressData)" />
     <PanGestureRecognizer OnPan="@(ShowPanData)" />
     <SwipeGestureRecognizer Direction="@(GestureDirection.Horizontal|GestureDirection.Vertical)" OnSwipe="@(ShowSwipeData)"
@@ -40,31 +41,31 @@
     string? longpressdata;
     void ShowLongPressData(GestureEventArgs e)
     {
-        longpressdata =  $"{e.Type}-{e.GestureCount}-{e.GestureDuration}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
+        longpressdata = $"{e.Type}-{e.GestureCount}-{e.GestureDuration}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
         InvokeAsync(StateHasChanged);
     }
     string? pandata;
     void ShowPanData(GesturePanEventArgs e)
     {
-        pandata =  $"{e.Type}-{e.GestureCount}-{e.GestureDuration}-{e.Direction}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
+        pandata = $"{e.Type}-{e.GestureCount}-{e.GestureDuration}-{e.Direction}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
         InvokeAsync(StateHasChanged);
     }
     string? swipedata;
     void ShowSwipeData(GestureSwipeEventArgs e)
     {
-        swipedata =  $"{e.Type}-{e.GestureCount}-{e.GestureDuration}-{e.Direction}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
+        swipedata = $"{e.Type}-{e.GestureCount}-{e.GestureDuration}-{e.Direction}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
         InvokeAsync(StateHasChanged);
     }
     string? pinchdata;
     void ShowPinchData(GesturePinchEventArgs e)
     {
-        pinchdata =  $"{e.Type}-{e.GestureCount}-{e.GestureDuration}-{e.Scale}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
+        pinchdata = $"{e.Type}-{e.GestureCount}-{e.GestureDuration}-{e.Scale}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
         InvokeAsync(StateHasChanged);
     }
     string? rotatedata;
     void ShowRotateData(GestureRotateEventArgs e)
     {
-        rotatedata =  $"{e.Type}-{e.GestureCount}-{e.GestureDuration}-{e.AngleChange}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
+        rotatedata = $"{e.Type}-{e.GestureCount}-{e.GestureDuration}-{e.AngleChange}|{e.CurrentPoints[0].Identifier}-{e.CurrentPoints[0].ClientX},{e.CurrentPoints[0].ClientX}|{e.StartPoints[0].Identifier}-{e.StartPoints[0].ClientX},{e.StartPoints[0].ClientX}";
         InvokeAsync(StateHasChanged);
     }
 }
