@@ -1,11 +1,11 @@
 ﻿<CascadingValue Value="@(this)">
     <div class="gesturearea"
-         @ontouchstart="@(TouchStart)" @ontouchstart:preventDefault
-         @ontouchmove="@(TouchMove)" @ontouchmove:preventDefault
-         @ontouchend="@(TouchEnd)" @ontouchend:preventDefault
-         @onmousedown="@(MouseDown)" @onmousedown:preventDefault
-         @onmousemove="@(MouseMove)" @onmousemove:preventDefault
-         @onmouseup="@(MouseUp)" @onmouseup:preventDefault>
+         @ontouchstart="@(TouchStart)" @ontouchstart:preventDefault="@(PreventDefault)"
+         @ontouchmove="@(TouchMove)" @ontouchmove:preventDefault="@(PreventDefault)"
+         @ontouchend="@(TouchEnd)" @ontouchend:preventDefault="@(PreventDefault)"
+         @onmousedown="@(MouseDown)" @onmousedown:preventDefault="@(PreventDefault)"
+         @onmousemove="@(MouseMove)" @onmousemove:preventDefault="@(PreventDefault)"
+         @onmouseup="@(MouseUp)" @onmouseup:preventDefault="@(PreventDefault)">
         @ChildContent
     </div>
 </CascadingValue>
@@ -13,6 +13,7 @@
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool Active { get; set; } = true;
+    [Parameter] public bool PreventDefault { get; set; } = false;
     [Parameter] public bool AllowMouseSimulation { get; set; }
 
     public bool GestureStart { get; set; }

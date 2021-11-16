@@ -1,7 +1,11 @@
 ﻿@using System.Text.Json
 
-<GestureArea AllowMouseSimulation="@(true)">
-    <section style="height:100vh;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+<GestureArea PreventDefault="@(false)">
+    <section style="height:100vh;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"
+    @onclick="ShowClickData">
+        <h6 style="margin:0">Click</h6>
+        <div>@clickdata</div>
+        <hr />
         <h6 style="margin:0">Tap</h6>
         <div>@tapdata</div>
         <hr />
@@ -20,7 +24,7 @@
         <h6 style="margin:0">Rotate</h6>
         <div>@rotatedata</div>
     </section>
-    <TapGestureRecognizer OnTap="@(ShowTapData)"
+    @*<TapGestureRecognizer OnTap="@(ShowTapData)"
                           AllowDoubleTap="@(true)" OnDoubleTap="@(ShowTapData)" />
     <LongPressGestureRecognizer OnLongPress="@(ShowLongPressData)" />
     <PanGestureRecognizer OnPan="@(ShowPanData)" />
@@ -28,10 +32,16 @@
                             OnSwipeUp="@(ShowSwipeData)" OnSwipeDown="@(ShowSwipeData)"
                             OnSwipeLeft="@(ShowSwipeData)" OnSwipeRight="@(ShowSwipeData)" />
     <PinchGestureRecognizer OnPinch="@(ShowPinchData)" OnPinchIn="@(ShowPinchData)" OnPinchOut="@(ShowPinchData)" />
-    <RotateGestureRecognizer OnRotate="@(ShowRotateData)" OnRotateLeft="@(ShowRotateData)" OnRotateRight="@(ShowRotateData)" />
+    <RotateGestureRecognizer OnRotate="@(ShowRotateData)" OnRotateLeft="@(ShowRotateData)" OnRotateRight="@(ShowRotateData)" />*@
 </GestureArea>
 
 @code {
+    string? clickdata;
+    void ShowClickData(MouseEventArgs e)
+    {
+        clickdata = $"{e.Type}-{e.ClientX}-{e.ClientY}";
+        InvokeAsync(StateHasChanged);
+    }
     string? tapdata;
     void ShowTapData(GestureEventArgs e)
     {
