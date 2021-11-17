@@ -67,7 +67,7 @@ public class SwipeGestureRecognizer : ComponentBase
             var direction = angle.CalcDirectionFromAngle();
             var second = GestureArea.GestureDuration / 1000;
 
-            if (direction > 0 && (Direction & direction) != direction)
+            if (direction == 0 || direction != (Direction & direction))
                 return;
 
             OnSwipe.InvokeAsync(CreateEventArgs("SWIPE",
@@ -90,7 +90,7 @@ public class SwipeGestureRecognizer : ComponentBase
             var second = GestureArea.GestureDuration / 1000;
             var factor = (10 - Factor) * 10 * second * second;
 
-            if (direction > 0 && (Direction & direction) != direction)
+            if (direction == 0 || direction != (Direction & direction))
                 return;
 
             OnSwipeEnd.InvokeAsync(CreateEventArgs("SWIPEEND",
