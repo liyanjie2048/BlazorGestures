@@ -1,5 +1,5 @@
 ﻿<CascadingValue Value="@(this)">
-    <div class="gesturearea"
+    <div class="gesturearea" @attributes=@(InputAttributes)
          @ontouchstart="@(TouchStart)" @ontouchstart:preventDefault="@(PreventDefault)"
          @ontouchmove="@(TouchMove)" @ontouchmove:preventDefault="@(PreventDefault)"
          @ontouchend="@(TouchEnd)" @ontouchend:preventDefault="@(PreventDefault)"
@@ -12,6 +12,7 @@
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? InputAttributes { get; set; }
     [Parameter] public bool Active { get; set; } = true;
     [Parameter] public bool PreventDefault { get; set; } = false;
     [Parameter] public bool AllowMouseSimulation { get; set; }
