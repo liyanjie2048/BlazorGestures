@@ -1,13 +1,14 @@
 ﻿<CascadingValue Value="@(this)">
-    <div class="gesturearea" @attributes=@(InputAttributes)
-         @ontouchstart="@(TouchStart)" @ontouchstart:preventDefault="@(PreventDefault)"
-         @ontouchmove="@(TouchMove)" @ontouchmove:preventDefault="@(PreventDefault)"
-         @ontouchend="@(TouchEnd)" @ontouchend:preventDefault="@(PreventDefault)"
-         @onmousedown="@(MouseDown)" @onmousedown:preventDefault="@(PreventDefault)"
-         @onmousemove="@(MouseMove)" @onmousemove:preventDefault="@(PreventDefault)"
-         @onmouseup="@(MouseUp)" @onmouseup:preventDefault="@(PreventDefault)">
+    <gesture-area style="display:block;-webkit-touch-callout:none!important;-webkit-user-select:none!important;-webkit-user-drag:none!important;touch-action:none!important;user-select:none!important"
+        @attributes=@(InputAttributes)
+        @ontouchstart=@(TouchStart) @ontouchstart:preventDefault=@(PreventDefault)
+        @ontouchmove=@(TouchMove) @ontouchmove:preventDefault=@(PreventDefault)
+        @ontouchend=@(TouchEnd) @ontouchend:preventDefault=@(PreventDefault)
+        @onmousedown=@(MouseDown) @onmousedown:preventDefault=@(PreventDefault)
+        @onmousemove=@(MouseMove) @onmousemove:preventDefault=@(PreventDefault)
+        @onmouseup=@(MouseUp) @onmouseup:preventDefault=@(PreventDefault)>
         @ChildContent
-    </div>
+    </gesture-area>
 </CascadingValue>
 
 @code {

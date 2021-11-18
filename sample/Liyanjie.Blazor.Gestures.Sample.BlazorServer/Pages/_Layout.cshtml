@@ -11,12 +11,6 @@
     <link href="css/site.css" rel="stylesheet" />
     <link href="BlazorApp.styles.css" rel="stylesheet" />
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
-    <script>
-        document.addEventListener("gesturestart", e => e.preventDefault());
-        document.addEventListener("gesturechange", e => e.preventDefault());
-        document.addEventListener("gestureend", e => e.preventDefault());
-        document.addEventListener("contextmenu", e => e.preventDefault());
-    </script>
 </head>
 <body>
     @RenderBody()
