@@ -7,7 +7,7 @@ namespace Liyanjie.Blazor.Gestures.Components;
 public class TapGestureRecognizer : ComponentBase
 {
     [Inject] public IJSRuntime? JS { get; set; }
-    [CascadingParameter] public GestureArea? GestureArea { get; set; }
+    [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
 
     [Parameter] public int MaxTime { get; set; } = 300;
     [Parameter] public double MaxDistance { get; set; } = 10;
@@ -25,11 +25,11 @@ public class TapGestureRecognizer : ComponentBase
     {
         base.OnInitialized();
 
-        if (GestureArea is not null)
+        if (GestureRecognizer is not null)
         {
-            GestureArea.GestureStarted += GestureStarted;
-            GestureArea.GestureMoved += GestureMoved;
-            GestureArea.GestureEnded += GestureEnded;
+            GestureRecognizer.GestureStarted += GestureStarted;
+            GestureRecognizer.GestureMoved += GestureMoved;
+            GestureRecognizer.GestureEnded += GestureEnded;
         }
     }
 
@@ -39,10 +39,10 @@ public class TapGestureRecognizer : ComponentBase
     }
     void GestureMoved(object? sender, TouchEventArgs e)
     {
-        if (!GestureArea.GestureStart)
+        if (!GestureRecognizer.GestureStart)
             return;
 
-        var distance = GestureArea.StartPoints?[0].CalcDistance(GestureArea.CurrentPoints?[0]);
+        var distance = GestureRecognizer.StartPoints?[0].CalcDistance(GestureRecognizer.CurrentPoints?[0]);
         if (distance > MaxDistance)
         {
             timer?.Dispose();
@@ -50,7 +50,7 @@ public class TapGestureRecognizer : ComponentBase
     }
     void GestureEnded(object? sender, TouchEventArgs e)
     {
-        if (!GestureArea.GestureStart)
+        if (!GestureRecognizer.GestureStart)
             return;
 
         timer?.Dispose();
@@ -60,15 +60,15 @@ public class TapGestureRecognizer : ComponentBase
 
     void AwareTap(TouchEventArgs e)
     {
-        var distance = GestureArea.StartPoints?[0].CalcDistance(GestureArea.CurrentPoints?[0]);
+        var distance = GestureRecognizer.StartPoints?[0].CalcDistance(GestureRecognizer.CurrentPoints?[0]);
         if (distance < MaxDistance)
         {
             bool isDoubleTap()
             {
                 if (AllowDoubleTap)
                 {
-                    if ((GestureArea.GestureStartTime - lastTapTime).TotalMilliseconds < MaxTime)
-                        return lastTapPoint is not null && lastTapPoint.CalcDistance(GestureArea.StartPoints?[0]) < MaxDoubleTapDistance;
+                    if ((GestureRecognizer.GestureStartTime - lastTapTime).TotalMilliseconds < MaxTime)
+                        return lastTapPoint is not null && lastTapPoint.CalcDistance(GestureRecognizer.StartPoints?[0]) < MaxDoubleTapDistance;
                 }
                 return false;
             }
@@ -78,10 +78,10 @@ public class TapGestureRecognizer : ComponentBase
                 OnDoubleTap.InvokeAsync(CreateEventArgs("DOUBLETAP"));
                 lastTapPoint = null;
             }
-            else if (GestureArea.GestureDuration < MaxTime)
+            else if (GestureRecognizer.GestureDuration < MaxTime)
             {
                 lastTapTime = DateTime.Now;
-                lastTapPoint = GestureArea.StartPoints?[0];
+                lastTapPoint = GestureRecognizer.StartPoints?[0];
                 timer = Extensions.SetTimeout(() => InvokeAsync(() =>
                 {
                     OnTap.InvokeAsync(CreateEventArgs("TAP"));
@@ -96,10 +96,10 @@ public class TapGestureRecognizer : ComponentBase
         return new()
         {
             Type = type,
-            StartPoints = GestureArea.StartPoints,
-            CurrentPoints = GestureArea.CurrentPoints,
-            GestureCount = GestureArea.StartPoints.Length,
-            GestureDuration = GestureArea.GestureDuration,
+            StartPoints = GestureRecognizer.StartPoints,
+            CurrentPoints = GestureRecognizer.CurrentPoints,
+            GestureCount = GestureRecognizer.StartPoints.Length,
+            GestureDuration = GestureRecognizer.GestureDuration,
         };
     }
 }

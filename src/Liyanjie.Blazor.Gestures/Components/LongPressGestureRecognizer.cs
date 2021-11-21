@@ -7,7 +7,7 @@ namespace Liyanjie.Blazor.Gestures.Components;
 public class LongPressGestureRecognizer : ComponentBase
 {
     [Inject] public IJSRuntime? JS { get; set; }
-    [CascadingParameter] public GestureArea? GestureArea { get; set; }
+    [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
 
     [Parameter] public int MinTime { get; set; } = 500;
     [Parameter] public double MaxDistance { get; set; } = 10;
@@ -19,11 +19,11 @@ public class LongPressGestureRecognizer : ComponentBase
     {
         base.OnInitialized();
 
-        if (GestureArea is not null)
+        if (GestureRecognizer is not null)
         {
-            GestureArea.GestureStarted += GestureStarted;
-            GestureArea.GestureMoved += GestureMoved;
-            GestureArea.GestureEnded += GestureEnded;
+            GestureRecognizer.GestureStarted += GestureStarted;
+            GestureRecognizer.GestureMoved += GestureMoved;
+            GestureRecognizer.GestureEnded += GestureEnded;
         }
     }
 
@@ -35,10 +35,10 @@ public class LongPressGestureRecognizer : ComponentBase
     }
     void GestureMoved(object? sender, TouchEventArgs e)
     {
-        if (!GestureArea.GestureStart)
+        if (!GestureRecognizer.GestureStart)
             return;
 
-        var distance = GestureArea.StartPoints?[0].CalcDistance(GestureArea.CurrentPoints?[0]);
+        var distance = GestureRecognizer.StartPoints?[0].CalcDistance(GestureRecognizer.CurrentPoints?[0]);
         if (distance > MinTime)
         {
             timer?.Dispose();
@@ -51,12 +51,12 @@ public class LongPressGestureRecognizer : ComponentBase
 
     void AwareLongPress(TouchEventArgs ev)
     {
-        if (!GestureArea.GestureStart)
+        if (!GestureRecognizer.GestureStart)
             return;
 
         timer = Extensions.SetTimeout(() =>
         {
-            var distance = GestureArea.StartPoints?[0].CalcDistance(GestureArea.CurrentPoints?[0]);
+            var distance = GestureRecognizer.StartPoints?[0].CalcDistance(GestureRecognizer.CurrentPoints?[0]);
             if (distance > MaxDistance)
                 return;
 
@@ -70,10 +70,10 @@ public class LongPressGestureRecognizer : ComponentBase
         return new()
         {
             Type = type,
-            StartPoints = GestureArea.StartPoints,
-            CurrentPoints = GestureArea.CurrentPoints,
-            GestureCount = GestureArea.StartPoints.Length,
-            GestureDuration = GestureArea.GestureDuration,
+            StartPoints = GestureRecognizer.StartPoints,
+            CurrentPoints = GestureRecognizer.CurrentPoints,
+            GestureCount = GestureRecognizer.StartPoints.Length,
+            GestureDuration = GestureRecognizer.GestureDuration,
         };
     }
 }

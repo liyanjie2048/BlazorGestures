@@ -7,7 +7,7 @@ namespace Liyanjie.Blazor.Gestures.Components;
 public class RotateGestureRecognizer : ComponentBase
 {
     [Inject] public IJSRuntime? JS { get; set; }
-    [CascadingParameter] public GestureArea? GestureArea { get; set; }
+    [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
 
     [Parameter] public double MinAngle { get; set; } = 30;
     [Parameter] public EventCallback<GestureRotateEventArgs> OnRotate { get; set; }
@@ -23,11 +23,11 @@ public class RotateGestureRecognizer : ComponentBase
     {
         base.OnInitialized();
 
-        if (GestureArea is not null)
+        if (GestureRecognizer is not null)
         {
-            GestureArea.GestureStarted += GestureStarted;
-            GestureArea.GestureMoved += GestureMoved;
-            GestureArea.GestureEnded += GestureEnded;
+            GestureRecognizer.GestureStarted += GestureStarted;
+            GestureRecognizer.GestureMoved += GestureMoved;
+            GestureRecognizer.GestureEnded += GestureEnded;
         }
     }
 
@@ -35,19 +35,19 @@ public class RotateGestureRecognizer : ComponentBase
     {
         if (e.Touches.Length >= 2)
         {
-            startAngle = GetAngle180(GestureArea.StartPoints[0], GestureArea.StartPoints[1]);
+            startAngle = GetAngle180(GestureRecognizer.StartPoints[0], GestureRecognizer.StartPoints[1]);
         }
     }
     void GestureMoved(object? sender, TouchEventArgs e)
     {
-        if (!GestureArea.GestureStart)
+        if (!GestureRecognizer.GestureStart)
             return;
 
         AwareRotate(e);
     }
     void GestureEnded(object? sender, TouchEventArgs e)
     {
-        if (!GestureArea.GestureStart)
+        if (!GestureRecognizer.GestureStart)
             return;
 
         if (rotateStart)
@@ -59,14 +59,14 @@ public class RotateGestureRecognizer : ComponentBase
 
     void AwareRotate(TouchEventArgs e)
     {
-        if (GestureArea.CurrentPoints.Length < 2)
+        if (GestureRecognizer.CurrentPoints.Length < 2)
             return;
 
         if (e.IsGestureMove())
         {
             rotateStart = true;
 
-            var currentAngle = GetAngle180(GestureArea.CurrentPoints[0], GestureArea.CurrentPoints[1]);
+            var currentAngle = GetAngle180(GestureRecognizer.CurrentPoints[0], GestureRecognizer.CurrentPoints[1]);
             var angleChange = GetAngleChange(currentAngle);
 
             OnRotate.InvokeAsync(CreateEventArgs("ROTATE",
@@ -77,12 +77,12 @@ public class RotateGestureRecognizer : ComponentBase
     }
     void AwareRotateEnd(TouchEventArgs e)
     {
-        if (GestureArea.CurrentPoints.Length < 2)
+        if (GestureRecognizer.CurrentPoints.Length < 2)
             return;
 
         if (e.IsGestureEnd())
         {
-            var currentAngle = GetAngle180(GestureArea.CurrentPoints[0], GestureArea.CurrentPoints[1]);
+            var currentAngle = GetAngle180(GestureRecognizer.CurrentPoints[0], GestureRecognizer.CurrentPoints[1]);
             var angleChange = GetAngleChange(currentAngle);
 
             OnRotateEnd.InvokeAsync(CreateEventArgs("ROTATEEND",
@@ -138,10 +138,10 @@ public class RotateGestureRecognizer : ComponentBase
         return new()
         {
             Type = type,
-            StartPoints = GestureArea.StartPoints,
-            CurrentPoints = GestureArea.CurrentPoints,
-            GestureCount = GestureArea.StartPoints.Length,
-            GestureDuration = GestureArea.GestureDuration,
+            StartPoints = GestureRecognizer.StartPoints,
+            CurrentPoints = GestureRecognizer.CurrentPoints,
+            GestureCount = GestureRecognizer.StartPoints.Length,
+            GestureDuration = GestureRecognizer.GestureDuration,
             CurrentAngle = currentAngle,
             AngleChange = angleChange,
             Direction = direction,

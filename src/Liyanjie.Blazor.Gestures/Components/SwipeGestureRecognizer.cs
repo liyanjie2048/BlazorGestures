@@ -7,7 +7,7 @@ namespace Liyanjie.Blazor.Gestures.Components;
 public class SwipeGestureRecognizer : ComponentBase
 {
     [Inject] public IJSRuntime? JS { get; set; }
-    [CascadingParameter] public GestureArea? GestureArea { get; set; }
+    [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
 
     [Parameter] public GestureDirection Direction { get; set; } = GestureDirection.Horizontal;
     [Parameter] public double MaxTime { get; set; } = 300;
@@ -26,11 +26,11 @@ public class SwipeGestureRecognizer : ComponentBase
     {
         base.OnInitialized();
 
-        if (GestureArea is not null)
+        if (GestureRecognizer is not null)
         {
-            GestureArea.GestureStarted += GestureStarted;
-            GestureArea.GestureMoved += GestureMoved;
-            GestureArea.GestureEnded += GestureEnded;
+            GestureRecognizer.GestureStarted += GestureStarted;
+            GestureRecognizer.GestureMoved += GestureMoved;
+            GestureRecognizer.GestureEnded += GestureEnded;
         }
     }
 
@@ -39,14 +39,14 @@ public class SwipeGestureRecognizer : ComponentBase
     }
     void GestureMoved(object? sender, TouchEventArgs e)
     {
-        if (!GestureArea.GestureStart)
+        if (!GestureRecognizer.GestureStart)
             return;
 
         AwareSwipe(e);
     }
     void GestureEnded(object? sender, TouchEventArgs e)
     {
-        if (!GestureArea.GestureStart)
+        if (!GestureRecognizer.GestureStart)
             return;
 
         if (swipeStart)
@@ -61,11 +61,11 @@ public class SwipeGestureRecognizer : ComponentBase
         {
             swipeStart = true;
 
-            var distanceX = GestureArea.CurrentPoints[0].ClientX - GestureArea.StartPoints[0].ClientX;
-            var distanceY = GestureArea.CurrentPoints[0].ClientY - GestureArea.StartPoints[0].ClientY;
-            var angle = GestureArea.StartPoints[0].CalcAngle(GestureArea.CurrentPoints[0]);
+            var distanceX = GestureRecognizer.CurrentPoints[0].ClientX - GestureRecognizer.StartPoints[0].ClientX;
+            var distanceY = GestureRecognizer.CurrentPoints[0].ClientY - GestureRecognizer.StartPoints[0].ClientY;
+            var angle = GestureRecognizer.StartPoints[0].CalcAngle(GestureRecognizer.CurrentPoints[0]);
             var direction = angle.CalcDirectionFromAngle();
-            var second = GestureArea.GestureDuration / 1000;
+            var second = GestureRecognizer.GestureDuration / 1000;
 
             if (direction == 0 || direction != (Direction & direction))
                 return;
@@ -83,11 +83,11 @@ public class SwipeGestureRecognizer : ComponentBase
     {
         if (e.IsGestureEnd())
         {
-            var distanceX = GestureArea.CurrentPoints[0].ClientX - GestureArea.StartPoints[0].ClientX;
-            var distanceY = GestureArea.CurrentPoints[0].ClientY - GestureArea.StartPoints[0].ClientY;
-            var angle = GestureArea.StartPoints[0].CalcAngle(GestureArea.CurrentPoints[0]);
+            var distanceX = GestureRecognizer.CurrentPoints[0].ClientX - GestureRecognizer.StartPoints[0].ClientX;
+            var distanceY = GestureRecognizer.CurrentPoints[0].ClientY - GestureRecognizer.StartPoints[0].ClientY;
+            var angle = GestureRecognizer.StartPoints[0].CalcAngle(GestureRecognizer.CurrentPoints[0]);
             var direction = angle.CalcDirectionFromAngle();
-            var second = GestureArea.GestureDuration / 1000;
+            var second = GestureRecognizer.GestureDuration / 1000;
             var factor = (10 - Factor) * 10 * second * second;
 
             if (direction == 0 || direction != (Direction & direction))
@@ -101,7 +101,7 @@ public class SwipeGestureRecognizer : ComponentBase
                 factor
             ));
 
-            if (GestureArea.GestureDuration < MaxTime && direction switch
+            if (GestureRecognizer.GestureDuration < MaxTime && direction switch
             {
                 GestureDirection.Up or GestureDirection.Down or GestureDirection.Vertical => Math.Abs(distanceY) > MinDistance,
                 GestureDirection.Left or GestureDirection.Right or GestureDirection.Horizontal => Math.Abs(distanceX) > MinDistance,
@@ -144,10 +144,10 @@ public class SwipeGestureRecognizer : ComponentBase
         return new()
         {
             Type = type,
-            StartPoints = GestureArea.StartPoints,
-            CurrentPoints = GestureArea.CurrentPoints,
-            GestureCount = GestureArea.StartPoints.Length,
-            GestureDuration = GestureArea.GestureDuration,
+            StartPoints = GestureRecognizer.StartPoints,
+            CurrentPoints = GestureRecognizer.CurrentPoints,
+            GestureCount = GestureRecognizer.StartPoints.Length,
+            GestureDuration = GestureRecognizer.GestureDuration,
             Angle = angle,
             Direction = direction,
             DistanceX = distanceX,

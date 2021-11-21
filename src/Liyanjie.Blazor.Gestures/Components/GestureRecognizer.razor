@@ -1,0 +1,76 @@
+﻿<CascadingValue Value=@(this)>
+    @ChildContent
+</CascadingValue>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool Active { get; set; } = true;
+
+    public bool GestureStart { get; set; }
+    public DateTime GestureStartTime { get; set; }
+    public int GestureDuration => (int)(DateTime.Now - GestureStartTime).TotalMilliseconds;
+
+    public TouchPoint[]? StartPoints { get; set; }
+    public TouchPoint[]? CurrentPoints { get; set; }
+
+    public EventHandler<TouchEventArgs>? GestureStarted { get; set; }
+    public EventHandler<TouchEventArgs>? GestureMoved { get; set; }
+    public EventHandler<TouchEventArgs>? GestureEnded { get; set; }
+
+    public void TouchStart(TouchEventArgs e)
+    {
+        if (!Active)
+            return;
+
+        GestureStart = true;
+        GestureStartTime = DateTime.Now;
+        StartPoints = e.Touches;
+        CurrentPoints = e.Touches;
+        GestureStarted?.Invoke(this, e);
+    }
+    public void TouchMove(TouchEventArgs e)
+    {
+        if (!Active)
+            return;
+
+        CurrentPoints = e.Touches;
+        GestureMoved?.Invoke(this, e);
+    }
+    public void TouchEnd(TouchEventArgs e)
+    {
+        if (!Active)
+            return;
+
+        GestureEnded?.Invoke(this, e);
+    }
+    public void MouseDown(MouseEventArgs e) => TouchStart(new()
+    {
+        Type = "mousedown",
+        Touches = GetTouchPoint(e),
+        TargetTouches = GetTouchPoint(e),
+        ChangedTouches = GetTouchPoint(e),
+    });
+    public void MouseMove(MouseEventArgs e) => TouchMove(new()
+    {
+        Type = "mousemove",
+        Touches = GetTouchPoint(e),
+        TargetTouches = GetTouchPoint(e),
+        ChangedTouches = GetTouchPoint(e),
+    });
+    public void MouseUp(MouseEventArgs e) => TouchEnd(new()
+    {
+        Type = "mouseup",
+        Touches = Array.Empty<TouchPoint>(),
+        TargetTouches = Array.Empty<TouchPoint>(),
+        ChangedTouches = GetTouchPoint(e),
+    });
+
+    TouchPoint[] GetTouchPoint(MouseEventArgs e)
+    {
+#if NET6_0_OR_GREATER
+        return new TouchPoint[] { new() { ClientX = e.ClientX, ClientY = e.ClientY, PageX = e.PageX, PageY = e.PageY, ScreenX = e.ScreenX, ScreenY = e.ScreenY } };
+#else
+    return new TouchPoint[] { new() { ClientX = e.ClientX, ClientY = e.ClientY, ScreenX = e.ScreenX, ScreenY = e.ScreenY } };
+#endif
+    }
+}

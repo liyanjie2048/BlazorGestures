@@ -1,29 +1,41 @@
 ﻿@using System.Text.Json
 
-<GestureArea PreventDefault=@(false) class="test">
-    <section style="height:100vh;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"
-    @onclick="ShowClickData">
-        <h6 style="margin:0">Click</h6>
-        <div>@clickdata</div>
-        <hr />
-        <h6 style="margin:0">Tap</h6>
-        <div>@tapdata</div>
-        <hr />
-        <h6 style="margin:0">LongPress</h6>
-        <div>@longpressdata</div>
-        <hr />
-        <h6 style="margin:0">Pan</h6>
-        <div>@pandata</div>
-        <hr />
-        <h6 style="margin:0">Swipe</h6>
-        <div>@swipedata</div>
-        <hr />
-        <h6 style="margin:0">Pinch</h6>
-        <div>@pinchdata</div>
-        <hr />
-        <h6 style="margin:0">Rotate</h6>
-        <div>@rotatedata</div>
-    </section>
+<style>
+    #section {
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        -webkit-user-drag: none !important;
+        touch-action: none !important;
+        user-select: none !important
+    }
+</style>
+<section id="section" style="display:block;height:100vh;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"
+         @onclick=@(ShowClickData)
+         @ontouchstart=@(TouchStart) @ontouchstart:preventDefault
+         @ontouchmove=@(TouchMove) @ontouchmove:preventDefault
+         @ontouchend=@(TouchEnd) @ontouchend:preventDefault>
+    <h6 style="margin:0">Click</h6>
+    <div>@clickdata</div>
+    <hr />
+    <h6 style="margin:0">Tap</h6>
+    <div>@tapdata</div>
+    <hr />
+    <h6 style="margin:0">LongPress</h6>
+    <div>@longpressdata</div>
+    <hr />
+    <h6 style="margin:0">Pan</h6>
+    <div>@pandata</div>
+    <hr />
+    <h6 style="margin:0">Swipe</h6>
+    <div>@swipedata</div>
+    <hr />
+    <h6 style="margin:0">Pinch</h6>
+    <div>@pinchdata</div>
+    <hr />
+    <h6 style="margin:0">Rotate</h6>
+    <div>@rotatedata</div>
+</section>
+<GestureRecognizer @ref=@(gestureRecognizer)>
     <TapGestureRecognizer OnTap="@(ShowTapData)"
                           AllowDoubleTap="@(true)" OnDoubleTap="@(ShowTapData)" />
     <LongPressGestureRecognizer OnLongPress="@(ShowLongPressData)" />
@@ -33,9 +45,15 @@
                             OnSwipeLeft="@(ShowSwipeData)" OnSwipeRight="@(ShowSwipeData)" />
     <PinchGestureRecognizer OnPinch="@(ShowPinchData)" OnPinchIn="@(ShowPinchData)" OnPinchOut="@(ShowPinchData)" />
     <RotateGestureRecognizer OnRotate="@(ShowRotateData)" OnRotateLeft="@(ShowRotateData)" OnRotateRight="@(ShowRotateData)" />
-</GestureArea>
+</GestureRecognizer>
 
 @code {
+    GestureRecognizer? gestureRecognizer;
+
+    void TouchStart(TouchEventArgs e) => gestureRecognizer?.TouchStart(e);
+    void TouchMove(TouchEventArgs e) => gestureRecognizer?.TouchMove(e);
+    void TouchEnd(TouchEventArgs e) => gestureRecognizer?.TouchEnd(e);
+
     string? clickdata;
     void ShowClickData(MouseEventArgs e)
     {
