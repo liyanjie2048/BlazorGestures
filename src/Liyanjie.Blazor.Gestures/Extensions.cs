@@ -24,7 +24,7 @@ namespace Liyanjie.Blazor.Gestures
             return (e.Type == "touchend" || e.Type == "mouseup");
         }
 
-        public static double CalcDistance(this TouchPoint? p1, TouchPoint? p2)
+        public static double CalcDistance(this TouchPoint p1, TouchPoint p2)
         {
             if (p1 is null || p2 is null)
                 return 0;
@@ -34,7 +34,7 @@ namespace Liyanjie.Blazor.Gestures
             return Math.Sqrt((x * x) + (y * y));
         }
 
-        public static double? CalcAngle(this TouchPoint? p1, TouchPoint? p2)
+        public static double? CalcAngle(this TouchPoint p1, TouchPoint p2)
         {
             if (p1 is null || p2 is null)
                 return default;

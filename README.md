@@ -20,7 +20,7 @@ Blazor手势识别
         @ontouchmove=@(TouchMove) @ontouchmove:preventDefault
         @ontouchend=@(TouchEnd) @ontouchend:preventDefault>
     </section>
-    <GestureRecognizer Active="true" @ref=@(gestureRecognizer)>
+    <GestureRecognizer Active=@(true) @ref=@(gestureRecognizer)>
         //Recognizers here
     </GestureRecognizer>
     @code{

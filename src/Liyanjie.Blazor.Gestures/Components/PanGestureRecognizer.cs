@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 
 namespace Liyanjie.Blazor.Gestures.Components;
 
 public class PanGestureRecognizer : ComponentBase
 {
-    [Inject] public IJSRuntime? JS { get; set; }
     [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
 
     [Parameter] public int Factor { get; set; } = 5;
@@ -32,14 +30,14 @@ public class PanGestureRecognizer : ComponentBase
     }
     void GestureMoved(object? sender, TouchEventArgs e)
     {
-        if (!GestureRecognizer.GestureStart)
+        if (!GestureRecognizer!.GestureStart)
             return;
 
         AwarePan(e);
     }
     void GestureEnded(object? sender, TouchEventArgs e)
     {
-        if (!GestureRecognizer.GestureStart)
+        if (!GestureRecognizer!.GestureStart)
             return;
 
         if (panStart)
@@ -53,8 +51,8 @@ public class PanGestureRecognizer : ComponentBase
         if (e.IsGestureMove())
         {
             panStart = true;
-            var distance = GestureRecognizer.StartPoints[0].CalcDistance(GestureRecognizer.CurrentPoints?[0]);
-            var angle = GestureRecognizer.StartPoints[0].CalcAngle(GestureRecognizer.CurrentPoints[0]);
+            var distance = GestureRecognizer!.StartPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![0]);
+            var angle = GestureRecognizer!.StartPoints![0].CalcAngle(GestureRecognizer!.CurrentPoints![0]);
             var direction = angle.CalcDirectionFromAngle();
             var second = GestureRecognizer.GestureDuration / 1000;
             var factor = (10 - Factor) * 10 * second * second;
@@ -71,8 +69,8 @@ public class PanGestureRecognizer : ComponentBase
     {
         if (e.IsGestureEnd())
         {
-            var distance = GestureRecognizer.StartPoints[0].CalcDistance(GestureRecognizer.CurrentPoints[0]);
-            var angle = GestureRecognizer.StartPoints[0].CalcAngle(GestureRecognizer.CurrentPoints[0]);
+            var distance = GestureRecognizer!.StartPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![0]);
+            var angle = GestureRecognizer!.StartPoints![0].CalcAngle(GestureRecognizer!.CurrentPoints![0]);
             var direction = angle.CalcDirectionFromAngle();
             var second = GestureRecognizer.GestureDuration / 1000;
 
@@ -95,9 +93,9 @@ public class PanGestureRecognizer : ComponentBase
         return new()
         {
             Type = type,
-            StartPoints = GestureRecognizer.StartPoints,
-            CurrentPoints = GestureRecognizer.CurrentPoints,
-            GestureCount = GestureRecognizer.StartPoints.Length,
+            StartPoints = GestureRecognizer?.StartPoints,
+            CurrentPoints = GestureRecognizer?.CurrentPoints,
+            GestureCount = GestureRecognizer!.StartPoints!.Length,
             GestureDuration = GestureRecognizer.GestureDuration,
             Angle = angle,
             Direction = direction,

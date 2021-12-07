@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 
 namespace Liyanjie.Blazor.Gestures.Components;
 
 public class LongPressGestureRecognizer : ComponentBase
 {
-    [Inject] public IJSRuntime? JS { get; set; }
     [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
 
     [Parameter] public int MinTime { get; set; } = 500;
@@ -31,14 +29,14 @@ public class LongPressGestureRecognizer : ComponentBase
     {
         timer?.Dispose(); //增加指点时用到
 
-        AwareLongPress(e);
+        AwareLongPress();
     }
     void GestureMoved(object? sender, TouchEventArgs e)
     {
-        if (!GestureRecognizer.GestureStart)
+        if (!GestureRecognizer!.GestureStart)
             return;
 
-        var distance = GestureRecognizer.StartPoints?[0].CalcDistance(GestureRecognizer.CurrentPoints?[0]);
+        var distance = GestureRecognizer!.StartPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![0]);
         if (distance > MinTime)
         {
             timer?.Dispose();
@@ -49,14 +47,14 @@ public class LongPressGestureRecognizer : ComponentBase
         timer?.Dispose();
     }
 
-    void AwareLongPress(TouchEventArgs ev)
+    void AwareLongPress()
     {
-        if (!GestureRecognizer.GestureStart)
+        if (!GestureRecognizer!.GestureStart)
             return;
 
         timer = Extensions.SetTimeout(() =>
         {
-            var distance = GestureRecognizer.StartPoints?[0].CalcDistance(GestureRecognizer.CurrentPoints?[0]);
+            var distance = GestureRecognizer.StartPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![0]);
             if (distance > MaxDistance)
                 return;
 
@@ -70,9 +68,9 @@ public class LongPressGestureRecognizer : ComponentBase
         return new()
         {
             Type = type,
-            StartPoints = GestureRecognizer.StartPoints,
-            CurrentPoints = GestureRecognizer.CurrentPoints,
-            GestureCount = GestureRecognizer.StartPoints.Length,
+            StartPoints = GestureRecognizer?.StartPoints,
+            CurrentPoints = GestureRecognizer?.CurrentPoints,
+            GestureCount = GestureRecognizer!.StartPoints!.Length,
             GestureDuration = GestureRecognizer.GestureDuration,
         };
     }

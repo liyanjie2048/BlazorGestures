@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 
 namespace Liyanjie.Blazor.Gestures.Components;
 
 public class TapGestureRecognizer : ComponentBase
 {
-    [Inject] public IJSRuntime? JS { get; set; }
     [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
 
     [Parameter] public int MaxTime { get; set; } = 300;
@@ -39,10 +37,10 @@ public class TapGestureRecognizer : ComponentBase
     }
     void GestureMoved(object? sender, TouchEventArgs e)
     {
-        if (!GestureRecognizer.GestureStart)
+        if (!GestureRecognizer!.GestureStart)
             return;
 
-        var distance = GestureRecognizer.StartPoints?[0].CalcDistance(GestureRecognizer.CurrentPoints?[0]);
+        var distance = GestureRecognizer!.StartPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![0]);
         if (distance > MaxDistance)
         {
             timer?.Dispose();
@@ -50,17 +48,17 @@ public class TapGestureRecognizer : ComponentBase
     }
     void GestureEnded(object? sender, TouchEventArgs e)
     {
-        if (!GestureRecognizer.GestureStart)
+        if (!GestureRecognizer!.GestureStart)
             return;
 
         timer?.Dispose();
 
-        AwareTap(e);
+        AwareTap();
     }
 
-    void AwareTap(TouchEventArgs e)
+    void AwareTap()
     {
-        var distance = GestureRecognizer.StartPoints?[0].CalcDistance(GestureRecognizer.CurrentPoints?[0]);
+        var distance = GestureRecognizer!.StartPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![0]);
         if (distance < MaxDistance)
         {
             bool isDoubleTap()
@@ -68,7 +66,7 @@ public class TapGestureRecognizer : ComponentBase
                 if (AllowDoubleTap)
                 {
                     if ((GestureRecognizer.GestureStartTime - lastTapTime).TotalMilliseconds < MaxTime)
-                        return lastTapPoint is not null && lastTapPoint.CalcDistance(GestureRecognizer.StartPoints?[0]) < MaxDoubleTapDistance;
+                        return lastTapPoint is not null && lastTapPoint.CalcDistance(GestureRecognizer!.StartPoints![0]) < MaxDoubleTapDistance;
                 }
                 return false;
             }
@@ -96,9 +94,9 @@ public class TapGestureRecognizer : ComponentBase
         return new()
         {
             Type = type,
-            StartPoints = GestureRecognizer.StartPoints,
-            CurrentPoints = GestureRecognizer.CurrentPoints,
-            GestureCount = GestureRecognizer.StartPoints.Length,
+            StartPoints = GestureRecognizer?.StartPoints,
+            CurrentPoints = GestureRecognizer?.CurrentPoints,
+            GestureCount = GestureRecognizer!.StartPoints!.Length,
             GestureDuration = GestureRecognizer.GestureDuration,
         };
     }

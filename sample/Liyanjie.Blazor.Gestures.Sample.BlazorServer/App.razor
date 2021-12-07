@@ -35,16 +35,16 @@
     <h6 style="margin:0">Rotate</h6>
     <div>@rotatedata</div>
 </section>
-<GestureRecognizer @ref=@(gestureRecognizer)>
-    <TapGestureRecognizer OnTap="@(ShowTapData)"
-                          AllowDoubleTap="@(true)" OnDoubleTap="@(ShowTapData)" />
-    <LongPressGestureRecognizer OnLongPress="@(ShowLongPressData)" />
-    <PanGestureRecognizer OnPan="@(ShowPanData)" />
-    <SwipeGestureRecognizer Direction="@(GestureDirection.Horizontal|GestureDirection.Vertical)" OnSwipe="@(ShowSwipeData)"
-                            OnSwipeUp="@(ShowSwipeData)" OnSwipeDown="@(ShowSwipeData)"
-                            OnSwipeLeft="@(ShowSwipeData)" OnSwipeRight="@(ShowSwipeData)" />
-    <PinchGestureRecognizer OnPinch="@(ShowPinchData)" OnPinchIn="@(ShowPinchData)" OnPinchOut="@(ShowPinchData)" />
-    <RotateGestureRecognizer OnRotate="@(ShowRotateData)" OnRotateLeft="@(ShowRotateData)" OnRotateRight="@(ShowRotateData)" />
+<GestureRecognizer Active=@(true) @ref=@(gestureRecognizer)>
+    <TapGestureRecognizer OnTap=@(ShowTapData)
+                          AllowDoubleTap=@(true) OnDoubleTap=@(ShowTapData) />
+    <LongPressGestureRecognizer OnLongPress=@(ShowLongPressData) />
+    <PanGestureRecognizer OnPan=@(ShowPanData) />
+    <SwipeGestureRecognizer Direction=@(GestureDirection.Horizontal|GestureDirection.Vertical) OnSwipe=@(ShowSwipeData)
+                            OnSwipeUp=@(ShowSwipeData) OnSwipeDown=@(ShowSwipeData)
+                            OnSwipeLeft=@(ShowSwipeData) OnSwipeRight=@(ShowSwipeData) />
+    <PinchGestureRecognizer OnPinch=@(ShowPinchData) OnPinchIn=@(ShowPinchData) OnPinchOut=@(ShowPinchData) />
+    <RotateGestureRecognizer OnRotate=@(ShowRotateData) OnRotateLeft=@(ShowRotateData) OnRotateRight=@(ShowRotateData) />
 </GestureRecognizer>
 
 @code {

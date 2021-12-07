@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 
 namespace Liyanjie.Blazor.Gestures.Components;
 
 public class PinchGestureRecognizer : ComponentBase
 {
-    [Inject] public IJSRuntime? JS { get; set; }
     [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
 
     [Parameter] public double MinScale { get; set; } = 0;
@@ -35,13 +33,13 @@ public class PinchGestureRecognizer : ComponentBase
     {
         if (e.Touches.Length >= 2)
         {
-            startDistance = GestureRecognizer.StartPoints[0].CalcDistance(GestureRecognizer.StartPoints[1]);
+            startDistance = GestureRecognizer!.StartPoints![0].CalcDistance(GestureRecognizer!.StartPoints![1]);
         }
     }
 
     void GestureMoved(object? sender, TouchEventArgs e)
     {
-        if (!GestureRecognizer.GestureStart)
+        if (!GestureRecognizer!.GestureStart)
             return;
 
         if (e.Touches.Length >= 2)
@@ -50,7 +48,7 @@ public class PinchGestureRecognizer : ComponentBase
 
     void GestureEnded(object? sender, TouchEventArgs e)
     {
-        if (!GestureRecognizer.GestureStart)
+        if (!GestureRecognizer!.GestureStart)
             return;
 
         if (pinchStart)
@@ -62,14 +60,14 @@ public class PinchGestureRecognizer : ComponentBase
 
     void AwarePinch(TouchEventArgs e)
     {
-        if (GestureRecognizer.CurrentPoints.Length < 2)
+        if (GestureRecognizer!.CurrentPoints!.Length < 2)
             return;
 
         if (e.IsGestureMove())
         {
             pinchStart = true;
 
-            var currentDistance = (GestureRecognizer.CurrentPoints[0]).CalcDistance(GestureRecognizer.CurrentPoints[1]);
+            var currentDistance = GestureRecognizer!.CurrentPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![1]);
             var scale = currentDistance / startDistance;
 
             OnPinch.InvokeAsync(CreateEventArgs("PINCH",
@@ -79,12 +77,12 @@ public class PinchGestureRecognizer : ComponentBase
     }
     void AwarePinchEnd(TouchEventArgs e)
     {
-        if (GestureRecognizer.CurrentPoints.Length < 2)
+        if (GestureRecognizer!.CurrentPoints!.Length < 2)
             return;
 
         if (e.IsGestureEnd())
         {
-            var currentDistance = (GestureRecognizer.CurrentPoints[0]).CalcDistance(GestureRecognizer.CurrentPoints[1]);
+            var currentDistance = GestureRecognizer!.CurrentPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![1]);
             var scale = currentDistance / startDistance;
 
             OnPinchEnd.InvokeAsync(CreateEventArgs("PINCHEND",
@@ -121,9 +119,9 @@ public class PinchGestureRecognizer : ComponentBase
         return new()
         {
             Type = type,
-            StartPoints = GestureRecognizer.StartPoints,
-            CurrentPoints = GestureRecognizer.CurrentPoints,
-            GestureCount = GestureRecognizer.StartPoints.Length,
+            StartPoints = GestureRecognizer?.StartPoints,
+            CurrentPoints = GestureRecognizer?.CurrentPoints,
+            GestureCount = GestureRecognizer!.StartPoints!.Length,
             GestureDuration = GestureRecognizer.GestureDuration,
             StartDistance = startDistance,
             CurrentDistance = currentDistance,
