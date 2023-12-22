@@ -52,7 +52,7 @@ Blazor手势识别
     ```html
     <GestureRecognizer>
         <LongPressGestureRecognizer MinTime="default 500"  //识别为LongPress的最小millionseconds
-                                    MaxDistance="default 10"  //识别为Tap的最大touchmove distance
+                                    MaxDistance="default 10"  //识别为Tap的最大pointermove distance
                                     OnLongPress="callback" />
     </GestureRecognizer>
     ```
@@ -92,7 +92,7 @@ Blazor手势识别
     <GestureRecognizer>
         <SwipeGestureRecognizer Direction="default Horizontal"  //可以组合：Up|Down==Vertical or Left|Right == Horizontal or Up|Down|Left|Right == Horizontal|Vertical
                                 MaxTime="default 300"  //识别SwipeUp、SwipeDown、SwipeLeft、SwipeRight的最大millionseconds
-                                MinDistance="default 20"  //识别为Tap的最大touchmove distance
+                                MinDistance="default 20"  //识别为Tap的最大pointermove distance
                                 OnSwipe="callback"
                                 OnSwipeEnd="callback"
                                 OnSwipeUp="callback"
@@ -105,11 +105,11 @@ Blazor手势识别
   - Usage
     ```html
     <GestureRecognizer>
-        <TapGestureRecognizer MaxDistance="default 10"  //识别为Tap的最大touchmove distance
+        <TapGestureRecognizer MaxDistance="default 10"  //识别为Tap的最大pointermove distance
                               MaxTime="default 300"  //识别DoubleTap的最大millionseconds
                               OnTap="callback"
                               AllowDoubleTap="default true"
-                              MaxDoubleTapDistance="default 20"  识别为DoubleTap的最大touchstart distance
+                              MaxDoubleTapDistance="default 20"  识别为DoubleTap的最大pointermove distance
                               OnDoubleTap="callback" />
     </GestureRecognizer>
     ```
