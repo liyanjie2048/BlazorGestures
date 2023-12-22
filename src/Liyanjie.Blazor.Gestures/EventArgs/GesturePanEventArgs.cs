@@ -2,8 +2,10 @@
 
 public record GesturePanEventArgs : GestureEventArgs
 {
-    public double? Angle { get; init; }
-    public GestureDirection Direction { get; init; }
-    public double Distance { get; init; }
-    public double Factor { get; init; }
+    public GesturePanEventArgs(GestureEventArgs e)
+    {
+        StartPoints = e.StartPoints;
+        MovePoints = e.MovePoints;
+        StartTime = e.StartTime;
+    }
 }

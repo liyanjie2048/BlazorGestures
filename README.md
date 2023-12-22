@@ -7,7 +7,7 @@ Blazor手势识别
   - Usage
     ```html
     <style>
-        #section {
+        .gesture-aArea {
             -webkit-touch-callout: none !important;
             -webkit-user-select: none !important;
             -webkit-user-drag: none !important;
@@ -15,21 +15,37 @@ Blazor手势识别
             user-select: none !important
         }
     </style>
-    <section id="section"
-        @ontouchstart=@(TouchStart) @ontouchstart:preventDefault
-        @ontouchmove=@(TouchMove) @ontouchmove:preventDefault
-        @ontouchend=@(TouchEnd) @ontouchend:preventDefault>
-    </section>
-    <GestureRecognizer Active=@(true) @ref=@(gestureRecognizer)>
+    <div class="gesture-area"
+         @onpointerdown=@(e=>gestureRecognizer?.PointerStart(e)) @onpointerdown:preventDefault
+         @onpointermove=@(e=>gestureRecognizer?.PointerMove(e)) @onpointermove:preventDefault
+         @onpointerup=@(e=>gestureRecognizer?.PointerEnd(e)) @onpointerup:preventDefault>
+    </div>
+    <GestureRecognizer @ref=@(gestureRecognizer) Enable=@(true)>
         //Recognizers here
     </GestureRecognizer>
     @code{
         GestureRecognizer? gestureRecognizer;
-
-        void TouchStart(TouchEventArgs e) => gestureRecognizer?.TouchStart(e);
-        void TouchMove(TouchEventArgs e) => gestureRecognizer?.TouchMove(e);
-        void TouchEnd(TouchEventArgs e) => gestureRecognizer?.TouchEnd(e);
     }
+    ```
+  - Also
+    ```html
+    <style>
+        .gesture-area {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            -webkit-user-drag: none !important;
+            touch-action: none !important;
+            user-select: none !important
+        }
+    </style>
+    <GestureArea @ref=@(gestureArea) Enable=@(true) class="gesture-area">
+        <ChildContent>
+            //ChildContent here
+        </ChildContent>
+        <Recognizers>
+            //Recognizers here
+        </Recognizers>
+    </GestureArea>
     ```
 - #### LongPressGestureRecognizer
   - Usage
@@ -37,37 +53,37 @@ Blazor手势识别
     <GestureRecognizer>
         <LongPressGestureRecognizer MinTime="default 500"  //识别为LongPress的最小millionseconds
                                     MaxDistance="default 10"  //识别为Tap的最大touchmove distance
-                                    OnLongPress="Your callback" />
+                                    OnLongPress="callback" />
     </GestureRecognizer>
     ```
 - #### PanGestureRecognizer
   - Usage
     ```html
     <GestureRecognizer>
-        <PanGestureRecognizer OnPan="Your callback"
-                              OnPanEnd="Your callback" />
+        <PanGestureRecognizer OnPan="callback"
+                              OnPanEnd="callback" />
     </GestureRecognizer>
     ```
 - #### PinchGestureRecognizer
   - Usage
     ```html
     <GestureRecognizer>
-        <PinchGestureRecognizer MinScale="default 0"  //触发PinchIn、PinchOut的最小scale change
-                                OnPinch="Your callback"
-                                OnPinchEnd="Your callback"
-                                OnPinchIn="Your callback"
-                                OnPinchOut="Your callback" />
+        <PinchGestureRecognizer MinScale="default 0"  //触发PinchIn、PinchOut的最小scale
+                                OnPinch="callback"
+                                OnPinchEnd="callback"
+                                OnPinchIn="callback"
+                                OnPinchOut="callback" />
     </GestureRecognizer>
     ```
 - #### RotateGestureRecognizer
   - Usage
     ```html
     <GestureRecognizer>
-        <RotateGestureRecognizer MinAngle="default 30"  //触发RotateLeft、RotateRight的最小angle change
-                                 OnRotate="Your callback"
-                                 OnRotateEnd="Your callback"
-                                 OnRotateLeft="Your callback"
-                                 OnRotateRight="Your callback" />
+        <RotateGestureRecognizer MinAngle="default 30"  //触发RotateLeft、RotateRight的最小angle
+                                 OnRotate="callback"
+                                 OnRotateEnd="callback"
+                                 OnRotateLeft="callback"
+                                 OnRotateRight="callback" />
     </GestureRecognizer>
     ```
 - #### SwipeGestureRecognizer
@@ -77,12 +93,12 @@ Blazor手势识别
         <SwipeGestureRecognizer Direction="default Horizontal"  //可以组合：Up|Down==Vertical or Left|Right == Horizontal or Up|Down|Left|Right == Horizontal|Vertical
                                 MaxTime="default 300"  //识别SwipeUp、SwipeDown、SwipeLeft、SwipeRight的最大millionseconds
                                 MinDistance="default 20"  //识别为Tap的最大touchmove distance
-                                OnSwipe="Your callback"
-                                OnSwipeEnd="default false"
-                                OnSwipeUp="Your callback"
-                                OnSwipeDown="Your callback"
-                                OnSwipeLeft="Your callback"
-                                OnSwipeRight="Your callback" />
+                                OnSwipe="callback"
+                                OnSwipeEnd="callback"
+                                OnSwipeUp="callback"
+                                OnSwipeDown="callback"
+                                OnSwipeLeft="callback"
+                                OnSwipeRight="callback" />
     </GestureRecognizer>
     ```
 - #### TapGestureRecognizer
@@ -91,10 +107,10 @@ Blazor手势识别
     <GestureRecognizer>
         <TapGestureRecognizer MaxDistance="default 10"  //识别为Tap的最大touchmove distance
                               MaxTime="default 300"  //识别DoubleTap的最大millionseconds
-                              OnTap="Your callback"
-                              AllowDoubleTap="default false"
-                              MaxDoubleTapDistance="20"  识别为DoubleTap的最大touchstart distance
-                              OnDoubleTap="Your callback" />
+                              OnTap="callback"
+                              AllowDoubleTap="default true"
+                              MaxDoubleTapDistance="default 20"  识别为DoubleTap的最大touchstart distance
+                              OnDoubleTap="callback" />
     </GestureRecognizer>
     ```
 - #### 自定义手势识别
@@ -116,17 +132,17 @@ Blazor手势识别
             }
         }
 
-        void GestureStarted(object? sender, TouchEventArgs e)
+        void GestureStarted(object? sender, GestureEventArgs e)
         {
-            //Your code
+            //Code here
         }
-        void GestureMoved(object? sender, TouchEventArgs e)
+        void GestureMoved(object? sender, GestureEventArgs e)
         {
-            //Your code
+            //Code here
         }
-        void GestureEnded(object? sender, TouchEventArgs e)
+        void GestureEnded(object? sender, GestureEventArgs e)
         {
-            //Your code
+            //Code here
         }
     }
     ```

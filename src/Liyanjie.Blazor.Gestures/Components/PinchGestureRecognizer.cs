@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace Liyanjie.Blazor.Gestures.Components;
+﻿namespace Liyanjie.Blazor.Gestures.Components;
 
 public class PinchGestureRecognizer : ComponentBase
 {
@@ -23,32 +20,33 @@ public class PinchGestureRecognizer : ComponentBase
 
         if (GestureRecognizer is not null)
         {
-            GestureRecognizer.GestureStarted += GestureStarted;
-            GestureRecognizer.GestureMoved += GestureMoved;
-            GestureRecognizer.GestureEnded += GestureEnded;
+            GestureRecognizer.GestureStart += GestureStart;
+            GestureRecognizer.GestureMove += GestureMove;
+            GestureRecognizer.GestureEnd += GestureEnd;
         }
     }
 
-    void GestureStarted(object? sender, TouchEventArgs e)
+    void GestureStart(object? sender, GestureEventArgs e)
     {
-        if (e.Touches.Length >= 2)
-        {
-            startDistance = GestureRecognizer!.StartPoints![0].CalcDistance(GestureRecognizer!.StartPoints![1]);
-        }
-    }
-
-    void GestureMoved(object? sender, TouchEventArgs e)
-    {
-        if (!GestureRecognizer!.GestureStart)
+        if (e.StartPoints.Count < 2)
             return;
 
-        if (e.Touches.Length >= 2)
+        startDistance = e.StartPoints[0].CalcDistance(e.StartPoints[1]);
+        pinchStart = true;
+    }
+
+    void GestureMove(object? sender, GestureEventArgs e)
+    {
+        if (e.MovePoints.Count < 2)
+            return;
+
+        if (pinchStart)
             AwarePinch(e);
     }
 
-    void GestureEnded(object? sender, TouchEventArgs e)
+    void GestureEnd(object? sender, GestureEventArgs e)
     {
-        if (!GestureRecognizer!.GestureStart)
+        if (e.MovePoints.Count < 2)
             return;
 
         if (pinchStart)
@@ -58,73 +56,46 @@ public class PinchGestureRecognizer : ComponentBase
         startDistance = 0;
     }
 
-    void AwarePinch(TouchEventArgs e)
+    void AwarePinch(GestureEventArgs e)
     {
-        if (GestureRecognizer!.CurrentPoints!.Length < 2)
-            return;
+        var moveDistance = e.MovePoints[0].CalcDistance(e.MovePoints[1]);
+        var scale = moveDistance / startDistance;
 
-        if (e.IsGestureMove())
-        {
-            pinchStart = true;
-
-            var currentDistance = GestureRecognizer!.CurrentPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![1]);
-            var scale = currentDistance / startDistance;
-
-            OnPinch.InvokeAsync(CreateEventArgs("PINCH",
-                currentDistance,
-                scale));
-        }
+        OnPinch.InvokeAsync(CreateEventArgs("pinch", e, scale));
     }
-    void AwarePinchEnd(TouchEventArgs e)
+    void AwarePinchEnd(GestureEventArgs e)
     {
-        if (GestureRecognizer!.CurrentPoints!.Length < 2)
-            return;
+        var moveDistance = e.MovePoints[0].CalcDistance(e.MovePoints[1]);
+        var scale = moveDistance / startDistance;
 
-        if (e.IsGestureEnd())
+        OnPinchEnd.InvokeAsync(CreateEventArgs("pinchend", e, scale));
+
+        if (Math.Abs(1 - scale) > MinScale)
         {
-            var currentDistance = GestureRecognizer!.CurrentPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![1]);
-            var scale = currentDistance / startDistance;
-
-            OnPinchEnd.InvokeAsync(CreateEventArgs("PINCHEND",
-                currentDistance,
-                scale));
-
-            if (Math.Abs(1 - scale) > MinScale)
+            var scale_diff = 0.00000000001; //防止touchend的scale与__scale_last_rate相等，不触发事件的情况。
+            if (scale > lastScale) //手势放大, 触发pinchout事件
             {
-                var scale_diff = 0.00000000001; //防止touchend的scale与__scale_last_rate相等，不触发事件的情况。
-                if (scale > lastScale) //手势放大, 触发pinchout事件
-                {
-                    lastScale = scale - scale_diff;
-                    OnPinchOut.InvokeAsync(CreateEventArgs("PINCH_OUT",
-                        currentDistance,
-                        scale));
-                }
-                else if (scale < lastScale) //手势缩小,触发pinchin事件
-                {
-                    lastScale = scale + scale_diff;
-                    OnPinchIn.InvokeAsync(CreateEventArgs("PINCH_IN",
-                        currentDistance,
-                        scale));
-                }
-
-                lastScale = 1;
+                lastScale = scale - scale_diff;
+                OnPinchOut.InvokeAsync(CreateEventArgs("pinchout", e, scale));
             }
+            else if (scale < lastScale) //手势缩小,触发pinchin事件
+            {
+                lastScale = scale + scale_diff;
+                OnPinchIn.InvokeAsync(CreateEventArgs("pinchin", e, scale));
+            }
+
+            lastScale = 1;
         }
     }
 
-    GesturePinchEventArgs CreateEventArgs(string type,
-        double currentDistance,
+    GesturePinchEventArgs CreateEventArgs(
+        string type,
+        GestureEventArgs e,
         double scale)
     {
-        return new()
+        return new(e)
         {
             Type = type,
-            StartPoints = GestureRecognizer?.StartPoints,
-            CurrentPoints = GestureRecognizer?.CurrentPoints,
-            GestureCount = GestureRecognizer!.StartPoints!.Length,
-            GestureDuration = GestureRecognizer.GestureDuration,
-            StartDistance = startDistance,
-            CurrentDistance = currentDistance,
             Scale = scale,
         };
     }

@@ -2,7 +2,12 @@
 
 public record GesturePinchEventArgs : GestureEventArgs
 {
-    public double StartDistance { get; init; }
-    public double CurrentDistance { get; init; }
+    public GesturePinchEventArgs(GestureEventArgs e)
+    {
+        StartPoints = e.StartPoints;
+        MovePoints = e.MovePoints;
+        StartTime = e.StartTime;
+    }
+
     public double Scale { get; init; }
 }

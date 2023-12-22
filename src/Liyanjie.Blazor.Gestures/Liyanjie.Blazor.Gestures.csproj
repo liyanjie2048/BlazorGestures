@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net5.0;</TargetFrameworks>
+		<TargetFrameworks>net6.0;net8.0;</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Description>Blazor手势识别</Description>
 		<Copyright>© Liyanjie.net</Copyright>
-		<Authors>liyanjie8712@outlook.com</Authors>
+		<Authors>liyanjie2048@outlook.com</Authors>
 		<Company>Liyanjie.net</Company>
-		<RepositoryUrl>https://github.com/liyanjie8712/BlazorGestures</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/liyanjie8712/BlazorGestures</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/liyanjie2048/BlazorGestures</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/liyanjie2048/BlazorGestures</PackageProjectUrl>
 		<RepositoryType>Git</RepositoryType>
 		<PackageIcon>liyanjie.net.256.png</PackageIcon>
 		<PackageIconUrl />
@@ -26,20 +26,12 @@
 		</None>
 	</ItemGroup>
 
-	<ItemGroup>
-		<SupportedPlatform Include="browser" />
-	</ItemGroup>
-
 	<Target Name="MovePackage" AfterTargets="Pack">
-		<Move SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="D:\_Packages\" />
+		<Move SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(SolutionPath)\..\dist" />
 	</Target>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net5.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0" />
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" />
 	</ItemGroup>
 
 </Project>

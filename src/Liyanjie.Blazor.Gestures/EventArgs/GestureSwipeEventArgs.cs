@@ -2,9 +2,10 @@
 
 public record GestureSwipeEventArgs : GestureEventArgs
 {
-    public double? Angle { get; init; }
-    public GestureDirection Direction { get; init; }
-    public double DistanceX { get; init; }
-    public double DistanceY { get; init; }
-    public double Factor { get; init; }
+    public GestureSwipeEventArgs(GestureEventArgs e)
+    {
+        StartPoints = e.StartPoints;
+        MovePoints = e.MovePoints;
+        StartTime = e.StartTime;
+    }
 }

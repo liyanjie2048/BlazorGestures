@@ -2,8 +2,12 @@
 
 public record GestureRotateEventArgs : GestureEventArgs
 {
-    public double StartAngle { get; init; }
-    public double CurrentAngle { get; init; }
-    public GestureDirection Direction { get; init; }
+    public GestureRotateEventArgs(GestureEventArgs e)
+    {
+        StartPoints = e.StartPoints;
+        MovePoints = e.MovePoints;
+        StartTime = e.StartTime;
+    }
+
     public double AngleChange { get; init; }
 }

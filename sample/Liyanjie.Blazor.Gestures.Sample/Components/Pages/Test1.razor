@@ -1,0 +1,100 @@
+﻿@page "/1"
+
+<div class="gesturearea"
+     @onpointerdown=@(e=>gestureRecognizer?.PointerStart(e)) @onpointerdown:preventDefault
+     @onpointermove=@(e=>gestureRecognizer?.PointerMove(e)) @onpointermove:preventDefault
+     @onpointerup=@(e=>gestureRecognizer?.PointerEnd(e)) @onpointerup:preventDefault>
+    <div>
+        <p>开始:@(gestureRecognizer?.Started)</p>
+        <p>
+            时长:@(gesture?.Duration)<br />
+            距离:@(gesture?.Distance.ToString("0.0"))(X:@(gesture?.DistanceX.ToString("0.0")),Y:@(gesture?.DistanceY.ToString("0.0")))<br />
+            角度:@(gesture?.Angle.ToString("0.0"))<br />
+            方向:@(gesture?.Direction)<br />
+            数量:@(gesture?.PointerCount)<br />
+            (@(gesture?.StartPoints[0].X),@(gesture?.StartPoints[0].Y))→(@(gesture?.MovePoints[0].X),@(gesture?.MovePoints[0].Y))
+        </p>
+        <p>@(tap) @(longpress) @(pan) @(swipe)</p>
+        <p>@(pinch)</p>
+        <p>@(rotate)</p>
+    </div>
+</div>
+<GestureRecognizer @ref=@(gestureRecognizer)
+                   Enable=@(true)>
+    <TapGestureRecognizer OnTap=@(ShowTapData)
+                          AllowDoubleTap=@(true) OnDoubleTap=@(ShowTapData) />
+    <LongPressGestureRecognizer OnLongPress=@(ShowLongPressData) />
+    <PanGestureRecognizer OnPan=@(ShowPanData) />
+    <SwipeGestureRecognizer Direction=@(GestureDirection.Horizontal|GestureDirection.Vertical) OnSwipe=@(ShowSwipeData)
+                            OnSwipeUp=@(ShowSwipeData) OnSwipeDown=@(ShowSwipeData)
+                            OnSwipeLeft=@(ShowSwipeData) OnSwipeRight=@(ShowSwipeData) />
+    <PinchGestureRecognizer OnPinch=@(ShowPinchData) OnPinchIn=@(ShowPinchData) OnPinchOut=@(ShowPinchData) />
+    <RotateGestureRecognizer OnRotate=@(ShowRotateData) OnRotateLeft=@(ShowRotateData) OnRotateRight=@(ShowRotateData) />
+</GestureRecognizer>
+
+
+@code {
+    GestureRecognizer? gestureRecognizer;
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender && gestureRecognizer is not null)
+        {
+            gestureRecognizer.GestureStart += (sender, e) =>
+            {
+                gesture = null;
+                tap = null;
+                longpress = null;
+                pan = null;
+                swipe = null;
+                pinch = null;
+                rotate = null;
+                InvokeAsync(StateHasChanged);
+            };
+        }
+    }
+
+    string? tap;
+    void ShowTapData(GestureEventArgs e)
+    {
+        tap = $"{e.Type}-√; ";
+        ShowData(e);
+    }
+    string? longpress;
+    void ShowLongPressData(GestureEventArgs e)
+    {
+        longpress = $"{e.Type}-√; ";
+        ShowData(e);
+    }
+    string? pan;
+    void ShowPanData(GesturePanEventArgs e)
+    {
+        pan = $"{e.Type}-√; ";
+        ShowData(e);
+    }
+    string? swipe;
+    void ShowSwipeData(GestureSwipeEventArgs e)
+    {
+        swipe = $"{e.Type}-√; ";
+        ShowData(e);
+    }
+    string? pinch;
+    void ShowPinchData(GesturePinchEventArgs e)
+    {
+        pinch = $"{e.Type}-缩放:{e.Scale:0.0}; ";
+        ShowData(e);
+    }
+    string? rotate;
+    void ShowRotateData(GestureRotateEventArgs e)
+    {
+        rotate = $"{e.Type}-旋转:{e.AngleChange:0.0}; ";
+        ShowData(e);
+    }
+    GestureEventArgs? gesture;
+    void ShowData(GestureEventArgs e)
+    {
+        gesture = e;
+        InvokeAsync(StateHasChanged);
+    }
+}

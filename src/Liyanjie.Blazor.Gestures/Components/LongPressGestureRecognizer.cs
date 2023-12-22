@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace Liyanjie.Blazor.Gestures.Components;
+﻿namespace Liyanjie.Blazor.Gestures.Components;
 
 public class LongPressGestureRecognizer : ComponentBase
 {
@@ -19,59 +16,46 @@ public class LongPressGestureRecognizer : ComponentBase
 
         if (GestureRecognizer is not null)
         {
-            GestureRecognizer.GestureStarted += GestureStarted;
-            GestureRecognizer.GestureMoved += GestureMoved;
-            GestureRecognizer.GestureEnded += GestureEnded;
+            GestureRecognizer.GestureStart += GestureStart;
+            GestureRecognizer.GestureMove += GestureMove;
+            GestureRecognizer.GestureEnd += GestureEnd;
         }
     }
 
-    void GestureStarted(object? sender, TouchEventArgs e)
+    void GestureStart(object? sender, GestureEventArgs e)
     {
         timer?.Dispose(); //增加指点时用到
 
-        AwareLongPress();
+        AwareLongPress(e);
     }
-    void GestureMoved(object? sender, TouchEventArgs e)
+    void GestureMove(object? sender, GestureEventArgs e)
     {
-        if (!GestureRecognizer!.GestureStart)
-            return;
-
-        var distance = GestureRecognizer!.StartPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![0]);
-        if (distance > MinTime)
+        if (e.Distance >= MaxDistance)
         {
             timer?.Dispose();
         }
     }
-    void GestureEnded(object? sender, TouchEventArgs e)
+    void GestureEnd(object? sender, GestureEventArgs e)
     {
         timer?.Dispose();
     }
 
-    void AwareLongPress()
+    void AwareLongPress(GestureEventArgs e)
     {
-        if (!GestureRecognizer!.GestureStart)
-            return;
-
         timer = Extensions.SetTimeout(() =>
         {
-            var distance = GestureRecognizer.StartPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![0]);
-            if (distance > MaxDistance)
-                return;
-
-            InvokeAsync(() => OnLongPress.InvokeAsync(CreateEventArgs("LONGPRESS")));
             timer?.Dispose();
+
+            if (e.Distance < MaxDistance)
+                InvokeAsync(() => OnLongPress.InvokeAsync(CreateEventArgs("longpress", e)));
         }, MinTime);
     }
 
-    GestureTapEventArgs CreateEventArgs(string type)
+    GestureTapEventArgs CreateEventArgs(string type, GestureEventArgs e)
     {
-        return new()
+        return new(e)
         {
             Type = type,
-            StartPoints = GestureRecognizer?.StartPoints,
-            CurrentPoints = GestureRecognizer?.CurrentPoints,
-            GestureCount = GestureRecognizer!.StartPoints!.Length,
-            GestureDuration = GestureRecognizer.GestureDuration,
         };
     }
 }

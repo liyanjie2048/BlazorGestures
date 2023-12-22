@@ -1,76 +1,76 @@
-﻿<CascadingValue Value=@(this)>
-    @ChildContent
-</CascadingValue>
+﻿<CascadingValue Value=@(this)>@(ChildContent)</CascadingValue>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public bool Active { get; set; } = true;
+    [Parameter] public bool Enable { get; set; } = true;
+    [Parameter] public RenderFragment ChildContent { get; set; } = default!;
 
-    public bool GestureStart { get; set; }
-    public DateTime GestureStartTime { get; set; }
-    public int GestureDuration => (int)(DateTime.Now - GestureStartTime).TotalMilliseconds;
+    Dictionary<long, GesturePoint> startPoints { get; set; } = [];
+    Dictionary<long, GesturePoint> movePoints { get; set; } = [];
 
-    public TouchPoint[]? StartPoints { get; set; }
-    public TouchPoint[]? CurrentPoints { get; set; }
+    public bool Started { get; private set; }
+    public DateTime? StartTime { get; private set; }
 
-    public EventHandler<TouchEventArgs>? GestureStarted { get; set; }
-    public EventHandler<TouchEventArgs>? GestureMoved { get; set; }
-    public EventHandler<TouchEventArgs>? GestureEnded { get; set; }
+    public event EventHandler<GestureEventArgs>? GestureStart;
+    public event EventHandler<GestureEventArgs>? GestureMove;
+    public event EventHandler<GestureEventArgs>? GestureEnd;
 
-    public void TouchStart(TouchEventArgs e)
+    public void PointerStart(PointerEventArgs e)
     {
-        if (!Active)
+        if (!Enable)
             return;
 
-        GestureStart = true;
-        GestureStartTime = DateTime.Now;
-        StartPoints = e.Touches;
-        CurrentPoints = e.Touches;
-        GestureStarted?.Invoke(this, e);
+        Started = true;
+        StartTime = DateTime.Now;
+
+        startPoints[e.PointerId] = GetTouchPoint(e);
+        movePoints[e.PointerId] = GetTouchPoint(e);
+
+        GestureStart?.Invoke(this, CreateEventArgs(e));
     }
-    public void TouchMove(TouchEventArgs e)
+    public void PointerMove(PointerEventArgs e)
     {
-        if (!Active)
+        if (!Enable)
             return;
 
-        CurrentPoints = e.Touches;
-        GestureMoved?.Invoke(this, e);
-    }
-    public void TouchEnd(TouchEventArgs e)
-    {
-        if (!Active)
+        if (!Started)
             return;
 
-        GestureEnded?.Invoke(this, e);
-    }
-    public void MouseDown(MouseEventArgs e) => TouchStart(new()
-    {
-        Type = "mousedown",
-        Touches = GetTouchPoint(e),
-        TargetTouches = GetTouchPoint(e),
-        ChangedTouches = GetTouchPoint(e),
-    });
-    public void MouseMove(MouseEventArgs e) => TouchMove(new()
-    {
-        Type = "mousemove",
-        Touches = GetTouchPoint(e),
-        TargetTouches = GetTouchPoint(e),
-        ChangedTouches = GetTouchPoint(e),
-    });
-    public void MouseUp(MouseEventArgs e) => TouchEnd(new()
-    {
-        Type = "mouseup",
-        Touches = Array.Empty<TouchPoint>(),
-        TargetTouches = Array.Empty<TouchPoint>(),
-        ChangedTouches = GetTouchPoint(e),
-    });
+        movePoints[e.PointerId] = GetTouchPoint(e);
 
-    TouchPoint[] GetTouchPoint(MouseEventArgs e)
+        GestureMove?.Invoke(this, CreateEventArgs(e));
+    }
+    public void PointerEnd(PointerEventArgs e)
     {
-#if NET6_0_OR_GREATER
-        return new TouchPoint[] { new() { ClientX = e.ClientX, ClientY = e.ClientY, PageX = e.PageX, PageY = e.PageY, ScreenX = e.ScreenX, ScreenY = e.ScreenY } };
-#else
-    return new TouchPoint[] { new() { ClientX = e.ClientX, ClientY = e.ClientY, ScreenX = e.ScreenX, ScreenY = e.ScreenY } };
-#endif
+        if (!Enable)
+            return;
+
+        if (!Started)
+            return;
+
+        GestureEnd?.Invoke(this, CreateEventArgs(e));
+
+        startPoints.Remove(e.PointerId);
+        movePoints.Remove(e.PointerId);
+        if (startPoints.Count == 0 || movePoints.Count == 0)
+        {
+            Started = false;
+            StartTime = null;
+        }
+    }
+
+    GestureEventArgs CreateEventArgs(PointerEventArgs e)
+    {
+        return new()
+            {
+                Type = e.Type,
+                StartPoints = startPoints.Values.OrderBy(_ => _.Identifier).ToArray(),
+                MovePoints = movePoints.Values.OrderBy(_ => _.Identifier).ToArray(),
+                StartTime = StartTime,
+            };
+    }
+
+    static GesturePoint GetTouchPoint(PointerEventArgs e)
+    {
+        return new(e.PointerId, e.ClientX, e.ClientY);
     }
 }

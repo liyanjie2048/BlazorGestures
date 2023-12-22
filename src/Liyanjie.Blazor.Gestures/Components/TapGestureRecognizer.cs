@@ -1,22 +1,19 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace Liyanjie.Blazor.Gestures.Components;
+﻿namespace Liyanjie.Blazor.Gestures.Components;
 
 public class TapGestureRecognizer : ComponentBase
 {
     [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
 
-    [Parameter] public int MaxTime { get; set; } = 300;
+    [Parameter] public int MaxTime { get; set; } = 200;
     [Parameter] public double MaxDistance { get; set; } = 10;
     [Parameter] public EventCallback<GestureTapEventArgs> OnTap { get; set; }
 
-    [Parameter] public bool AllowDoubleTap { get; set; } = false;
+    [Parameter] public bool AllowDoubleTap { get; set; } = true;
     [Parameter] public double MaxDoubleTapDistance { get; set; } = 20;
     [Parameter] public EventCallback<GestureTapEventArgs> OnDoubleTap { get; set; }
 
     DateTime lastTapTime;
-    TouchPoint? lastTapPoint;
+    GesturePoint? lastTapPoint;
     Timer? timer;
 
     protected override void OnInitialized()
@@ -25,79 +22,62 @@ public class TapGestureRecognizer : ComponentBase
 
         if (GestureRecognizer is not null)
         {
-            GestureRecognizer.GestureStarted += GestureStarted;
-            GestureRecognizer.GestureMoved += GestureMoved;
-            GestureRecognizer.GestureEnded += GestureEnded;
+            GestureRecognizer.GestureStart += GestureStart;
+            GestureRecognizer.GestureMove += GestureMove;
+            GestureRecognizer.GestureEnd += GestureEnd;
         }
     }
 
-    void GestureStarted(object? sender, TouchEventArgs e)
+    void GestureStart(object? sender, GestureEventArgs e)
     {
         timer?.Dispose();
     }
-    void GestureMoved(object? sender, TouchEventArgs e)
+    void GestureMove(object? sender, GestureEventArgs e)
     {
-        if (!GestureRecognizer!.GestureStart)
-            return;
-
-        var distance = GestureRecognizer!.StartPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![0]);
-        if (distance > MaxDistance)
+        if (e.Distance >= MaxDistance)
         {
             timer?.Dispose();
         }
     }
-    void GestureEnded(object? sender, TouchEventArgs e)
+    void GestureEnd(object? sender, GestureEventArgs e)
     {
-        if (!GestureRecognizer!.GestureStart)
-            return;
-
         timer?.Dispose();
 
-        AwareTap();
+        AwareTap(e);
     }
 
-    void AwareTap()
+    void AwareTap(GestureEventArgs e)
     {
-        var distance = GestureRecognizer!.StartPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![0]);
-        if (distance < MaxDistance)
-        {
-            bool isDoubleTap()
-            {
-                if (AllowDoubleTap)
-                {
-                    if ((GestureRecognizer.GestureStartTime - lastTapTime).TotalMilliseconds < MaxTime)
-                        return lastTapPoint is not null && lastTapPoint.CalcDistance(GestureRecognizer!.StartPoints![0]) < MaxDoubleTapDistance;
-                }
-                return false;
-            }
+        if (e.Distance >= MaxDistance)
+            return;
 
-            if (isDoubleTap())
+        if (AllowDoubleTap
+            && (e.StartTime - lastTapTime)?.TotalMilliseconds < MaxTime
+            && lastTapPoint is not null
+            && lastTapPoint.CalcDistance(e.MovePoints[0]) < MaxDoubleTapDistance)
+        {
+            OnDoubleTap.InvokeAsync(CreateEventArgs("doubletap", e));
+            lastTapPoint = null;
+        }
+        else if (e.Duration < MaxTime)
+        {
+            lastTapTime = DateTime.Now;
+            lastTapPoint = e.MovePoints[0];
+            timer = Extensions.SetTimeout(() => InvokeAsync(() =>
             {
-                OnDoubleTap.InvokeAsync(CreateEventArgs("DOUBLETAP"));
+                timer?.Dispose();
+
+                OnTap.InvokeAsync(CreateEventArgs("tap", e));
                 lastTapPoint = null;
-            }
-            else if (GestureRecognizer.GestureDuration < MaxTime)
-            {
-                lastTapTime = DateTime.Now;
-                lastTapPoint = GestureRecognizer.StartPoints?[0];
-                timer = Extensions.SetTimeout(() => InvokeAsync(() =>
-                {
-                    OnTap.InvokeAsync(CreateEventArgs("TAP"));
-                    lastTapPoint = null;
-                }), MaxTime);
-            }
+            }), MaxTime);
         }
     }
 
-    GestureTapEventArgs CreateEventArgs(string type)
+    GestureTapEventArgs CreateEventArgs(string type, GestureEventArgs e)
     {
-        return new()
+        return new(e)
         {
             Type = type,
-            StartPoints = GestureRecognizer?.StartPoints,
-            CurrentPoints = GestureRecognizer?.CurrentPoints,
-            GestureCount = GestureRecognizer!.StartPoints!.Length,
-            GestureDuration = GestureRecognizer.GestureDuration,
         };
     }
 }

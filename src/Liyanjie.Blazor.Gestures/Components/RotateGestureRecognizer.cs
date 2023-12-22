@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace Liyanjie.Blazor.Gestures.Components;
+﻿namespace Liyanjie.Blazor.Gestures.Components;
 
 public class RotateGestureRecognizer : ComponentBase
 {
@@ -13,9 +10,9 @@ public class RotateGestureRecognizer : ComponentBase
     [Parameter] public EventCallback<GestureRotateEventArgs> OnRotateLeft { get; set; }
     [Parameter] public EventCallback<GestureRotateEventArgs> OnRotateRight { get; set; }
 
-    double __rotation;
-    double startAngle;
     bool rotateStart;
+    double lastAngle;
+    double angleChange;
 
     protected override void OnInitialized()
     {
@@ -23,132 +20,87 @@ public class RotateGestureRecognizer : ComponentBase
 
         if (GestureRecognizer is not null)
         {
-            GestureRecognizer.GestureStarted += GestureStarted;
-            GestureRecognizer.GestureMoved += GestureMoved;
-            GestureRecognizer.GestureEnded += GestureEnded;
+            GestureRecognizer.GestureStart += GestureStart;
+            GestureRecognizer.GestureMove += GestureMove;
+            GestureRecognizer.GestureEnd += GestureEnd;
         }
     }
 
-    void GestureStarted(object? sender, TouchEventArgs e)
+    void GestureStart(object? sender, GestureEventArgs e)
     {
-        if (e.Touches.Length >= 2)
-        {
-            startAngle = GetAngle180(GestureRecognizer!.StartPoints![0], GestureRecognizer!.StartPoints![1]);
-        }
-    }
-    void GestureMoved(object? sender, TouchEventArgs e)
-    {
-        if (!GestureRecognizer!.GestureStart)
+        if (e.StartPoints.Count < 2)
             return;
 
-        AwareRotate(e);
+        lastAngle = e.MovePoints[0].CalcAngle(e.MovePoints[1]);
+        rotateStart = true;
+
     }
-    void GestureEnded(object? sender, TouchEventArgs e)
+    void GestureMove(object? sender, GestureEventArgs e)
     {
-        if (!GestureRecognizer!.GestureStart)
+        if (e.MovePoints.Count < 2)
+            return;
+
+        if (rotateStart)
+            AwareRotate(e);
+    }
+    void GestureEnd(object? sender, GestureEventArgs e)
+    {
+        if (e.MovePoints.Count < 2)
             return;
 
         if (rotateStart)
             AwareRotateEnd(e);
 
         rotateStart = false;
-        startAngle = 0;
+        lastAngle = 0;
+        angleChange = 0;
     }
 
-    void AwareRotate(TouchEventArgs e)
+    void AwareRotate(GestureEventArgs e)
     {
-        if (GestureRecognizer!.CurrentPoints!.Length < 2)
-            return;
+        var moveAngle = e.MovePoints[0].CalcAngle(e.MovePoints[1]);
+        angleChange += GetAngleChange(moveAngle);
 
-        if (e.IsGestureMove())
-        {
-            rotateStart = true;
-
-            var currentAngle = GetAngle180(GestureRecognizer!.CurrentPoints![0], GestureRecognizer!.CurrentPoints![1]);
-            var angleChange = GetAngleChange(currentAngle);
-
-            OnRotate.InvokeAsync(CreateEventArgs("ROTATE",
-                currentAngle,
-                angleChange,
-                angleChange > 0 ? GestureDirection.Right : GestureDirection.Left));
-        }
+        OnRotate.InvokeAsync(CreateEventArgs("rotate", e));
     }
-    void AwareRotateEnd(TouchEventArgs e)
+    void AwareRotateEnd(GestureEventArgs e)
     {
-        if (GestureRecognizer!.CurrentPoints!.Length < 2)
-            return;
+        OnRotateEnd.InvokeAsync(CreateEventArgs("rotateend", e));
 
-        if (e.IsGestureEnd())
+        if (Math.Abs(angleChange) > MinAngle)
         {
-            var currentAngle = GetAngle180(GestureRecognizer!.CurrentPoints![0], GestureRecognizer!.CurrentPoints![1]);
-            var angleChange = GetAngleChange(currentAngle);
-
-            OnRotateEnd.InvokeAsync(CreateEventArgs("ROTATEEND",
-                currentAngle,
-                angleChange,
-                angleChange > 0 ? GestureDirection.Right : GestureDirection.Left));
-
-            if (Math.Abs(angleChange) > MinAngle)
+            if (angleChange > 0)
             {
-                if (angleChange > 0)
-                {
-                    OnRotateRight.InvokeAsync(CreateEventArgs("ROTATE_RIGHT",
-                        currentAngle,
-                        angleChange,
-                        GestureDirection.Right));
-                }
-                else
-                {
-                    OnRotateLeft.InvokeAsync(CreateEventArgs("ROTATE_LEFT",
-                        currentAngle,
-                        angleChange,
-                        GestureDirection.Left));
-                }
+                OnRotateRight.InvokeAsync(CreateEventArgs("rotateright", e));
+            }
+            else
+            {
+                OnRotateLeft.InvokeAsync(CreateEventArgs("rotateleft", e));
             }
         }
     }
 
-    double GetAngleChange(double currentAngle)
+    double GetAngleChange(double moveAngle)
     {
-        var diff = startAngle - currentAngle;
-        //var count = 0;
+        var value = moveAngle - lastAngle;
+        lastAngle = moveAngle;
 
-        //while (Math.Abs(diff - __rotation) > 90 && count++ < 50)
-        //{
-        //    if (__rotation < 0)
-        //    {
-        //        diff -= 180;
-        //    }
-        //    else
-        //    {
-        //        diff += 180;
-        //    }
-        //}
-        __rotation = diff;
-        return __rotation;
+        if (value > 180)
+            value = 360 - value;
+        else if (value < -180)
+            value = 360 + value;
+        Console.WriteLine(value);
+        return value;
     }
 
-    GestureRotateEventArgs CreateEventArgs(string type,
-        double currentAngle,
-        double angleChange,
-        GestureDirection direction)
+    GestureRotateEventArgs CreateEventArgs(
+        string type,
+        GestureEventArgs e)
     {
-        return new()
+        return new(e)
         {
             Type = type,
-            StartPoints = GestureRecognizer?.StartPoints,
-            CurrentPoints = GestureRecognizer?.CurrentPoints,
-            GestureCount = GestureRecognizer!.StartPoints!.Length,
-            GestureDuration = GestureRecognizer.GestureDuration,
-            CurrentAngle = currentAngle,
             AngleChange = angleChange,
-            Direction = direction,
         };
-    }
-
-    static double GetAngle180(TouchPoint p1, TouchPoint p2)
-    {
-        var angle = Math.Atan((p2.ClientY - p1.ClientY) * -1 / (p2.ClientX - p1.ClientX)) * (180 / Math.PI);
-        return (angle < 0 ? (angle + 180) : angle);
     }
 }

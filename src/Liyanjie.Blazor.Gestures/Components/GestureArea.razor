@@ -1,0 +1,20 @@
+﻿<div @attributes=@(Attributes)
+     @onpointerdown=@(e=>GestureRecognizer?.PointerStart(e)) @onpointerdown:preventDefault
+     @onpointermove=@(e=>GestureRecognizer?.PointerMove(e)) @onpointermove:preventDefault
+     @onpointerup=@(e=>GestureRecognizer?.PointerEnd(e)) @onpointerup:preventDefault>
+    @(ChildContent)
+</div>
+<GestureRecognizer @ref=@(GestureRecognizer) Enable=@(Enable)>
+    @(Recognizers)
+</GestureRecognizer>
+
+@code {
+    [Parameter] public bool Enable { get; set; } = true;
+    [Parameter] public RenderFragment ChildContent { get; set; } = default!;
+    [Parameter] public RenderFragment Recognizers { get; set; } = default!;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> Attributes { get; set; } = default!;
+
+    public GestureRecognizer? GestureRecognizer { get; private set; }
+}

@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" style="touch-action:none">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <base href="/" />
+
+    <style>
+        body {
+            margin: 0
+        }
+
+        .gesturearea {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            -webkit-user-drag: none !important;
+            touch-action: none !important;
+            user-select: none !important;
+            width: 100vw;
+            height: 100vh;
+            background: #efe;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <Routes @rendermode=@(RenderMode.InteractiveServer) />
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>
+
+@code {
+}

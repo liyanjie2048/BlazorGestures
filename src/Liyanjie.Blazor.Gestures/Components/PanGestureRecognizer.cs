@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace Liyanjie.Blazor.Gestures.Components;
+﻿namespace Liyanjie.Blazor.Gestures.Components;
 
 public class PanGestureRecognizer : ComponentBase
 {
@@ -19,88 +16,41 @@ public class PanGestureRecognizer : ComponentBase
 
         if (GestureRecognizer is not null)
         {
-            GestureRecognizer.GestureStarted += GestureStarted;
-            GestureRecognizer.GestureMoved += GestureMoved;
-            GestureRecognizer.GestureEnded += GestureEnded;
+            GestureRecognizer.GestureMove += GestureMove;
+            GestureRecognizer.GestureEnd += GestureEnd;
         }
     }
 
-    void GestureStarted(object? sender, TouchEventArgs e)
+    void GestureMove(object? sender, GestureEventArgs e)
     {
-    }
-    void GestureMoved(object? sender, TouchEventArgs e)
-    {
-        if (!GestureRecognizer!.GestureStart)
-            return;
-
         AwarePan(e);
     }
-    void GestureEnded(object? sender, TouchEventArgs e)
+    void GestureEnd(object? sender, GestureEventArgs e)
     {
-        if (!GestureRecognizer!.GestureStart)
-            return;
-
         if (panStart)
             AwarePanEnd(e);
 
         panStart = false;
     }
 
-    void AwarePan(TouchEventArgs e)
+    void AwarePan(GestureEventArgs e)
     {
-        if (e.IsGestureMove())
-        {
-            panStart = true;
-            var distance = GestureRecognizer!.StartPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![0]);
-            var angle = GestureRecognizer!.StartPoints![0].CalcAngle(GestureRecognizer!.CurrentPoints![0]);
-            var direction = angle.CalcDirectionFromAngle();
-            var second = GestureRecognizer.GestureDuration / 1000;
-            var factor = (10 - Factor) * 10 * second * second;
+        panStart = true;
 
-            OnPan.InvokeAsync(CreateEventArgs("PAN",
-                angle,
-                direction,
-                distance,
-                (10 - Factor) * 10 * second * second
-            ));
-        }
+        OnPan.InvokeAsync(CreateEventArgs("pan", e));
     }
-    void AwarePanEnd(TouchEventArgs e)
+    void AwarePanEnd(GestureEventArgs e)
     {
-        if (e.IsGestureEnd())
-        {
-            var distance = GestureRecognizer!.StartPoints![0].CalcDistance(GestureRecognizer!.CurrentPoints![0]);
-            var angle = GestureRecognizer!.StartPoints![0].CalcAngle(GestureRecognizer!.CurrentPoints![0]);
-            var direction = angle.CalcDirectionFromAngle();
-            var second = GestureRecognizer.GestureDuration / 1000;
-
-            OnPanEnd.InvokeAsync(CreateEventArgs("PANEND",
-                angle,
-                direction,
-                distance,
-                (10 - Factor) * 10 * second * second
-            ));
-        }
+        OnPanEnd.InvokeAsync(CreateEventArgs("panend", e));
     }
 
     GesturePanEventArgs CreateEventArgs(
         string type,
-        double? angle,
-        GestureDirection direction,
-        double distance,
-        int factor)
+        GestureEventArgs e)
     {
-        return new()
+        return new(e)
         {
             Type = type,
-            StartPoints = GestureRecognizer?.StartPoints,
-            CurrentPoints = GestureRecognizer?.CurrentPoints,
-            GestureCount = GestureRecognizer!.StartPoints!.Length,
-            GestureDuration = GestureRecognizer.GestureDuration,
-            Angle = angle,
-            Direction = direction,
-            Distance = distance,
-            Factor = factor,
         };
     }
 }
