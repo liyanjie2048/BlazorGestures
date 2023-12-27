@@ -80,7 +80,7 @@ Blazor手势识别
   - Usage
     ```html
     <GestureRecognizer>
-        <RotateGestureRecognizer MinAngle="default 30"  //触发RotateLeft、RotateRight的最小angle
+        <RotateGestureRecognizer MinAngle="default 10"  //触发RotateLeft、RotateRight的最小angle
                                  OnRotate="callback"
                                  OnRotateEnd="callback"
                                  OnRotateLeft="callback"
@@ -91,9 +91,9 @@ Blazor手势识别
   - Usage
     ```html
     <GestureRecognizer>
-        <SwipeGestureRecognizer Direction="default Horizontal"  //可以组合：Up|Down==Vertical or Left|Right == Horizontal or Up|Down|Left|Right == Horizontal|Vertical
+        <SwipeGestureRecognizer Direction="default GestureDirection.Horizontal"  //可以组合：Up|Down==Vertical or Left|Right == Horizontal or Up|Down|Left|Right == Horizontal|Vertical
                                 MaxDuration="default 300"  //识别SwipeUp、SwipeDown、SwipeLeft、SwipeRight的最大millionseconds
-                                MinDistance="default 20"  //识别为Tap的最大pointermove distance
+                                MinDistance="default 20"  //识别SwipeUp、SwipeDown、SwipeLeft、SwipeRight的最大pointermove distance
                                 OnSwipe="callback"
                                 OnSwipeEnd="callback"
                                 OnSwipeUp="callback"
@@ -106,8 +106,8 @@ Blazor手势识别
   - Usage
     ```html
     <GestureRecognizer>
-        <TapGestureRecognizer MaxDistance="default 10"  //识别为Tap的最大pointermove distance
-                              MaxDuration="default 300"  //识别DoubleTap的最大millionseconds
+        <TapGestureRecognizer MaxDuration="default 200"  //识别DoubleTap的最大millionseconds
+                              MaxDistance="default 10"  //识别为Tap的最大pointermove distance
                               OnTap="callback"
                               AllowDoubleTap="default true"
                               MaxDoubleTapDistance="default 20"  识别为DoubleTap的最大pointermove distance
