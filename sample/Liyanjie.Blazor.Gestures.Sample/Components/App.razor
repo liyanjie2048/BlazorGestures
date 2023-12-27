@@ -1,14 +1,14 @@
 ﻿<!DOCTYPE html>
 
-<html lang="en" style="touch-action:none">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
     <base href="/" />
-
     <style>
         body {
-            margin: 0
+            margin: 0;
+            touch-action: none !important;
         }
 
         .gesturearea {
@@ -17,9 +17,10 @@
             -webkit-user-drag: none !important;
             touch-action: none !important;
             user-select: none !important;
-            width: 100vw;
-            height: 100vh;
-            background: #efe;
+            width: 60vw;
+            height: 60vh;
+            margin: 20vh 20vw;
+            background: #ccffcc;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -28,10 +29,7 @@
     </style>
 </head>
 <body>
-    <Routes @rendermode=@(RenderMode.InteractiveServer) />
-    <script src="_framework/blazor.server.js"></script>
+    <Routes @rendermode=(RenderMode.InteractiveAuto) />
+    <script src="_framework/blazor.web.js"></script>
 </body>
 </html>
-
-@code {
-}

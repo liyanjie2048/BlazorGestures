@@ -1,21 +1,52 @@
 ﻿namespace Liyanjie.Blazor.Gestures.Components;
 
-public class TapGestureRecognizer : ComponentBase
+/// <summary>
+/// 
+/// </summary>
+public sealed class TapGestureRecognizer : ComponentBase
 {
-    [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
+    /// <summary>
+    /// 
+    /// </summary>
+    [CascadingParameter] GestureRecognizer? GestureRecognizer { get; set; }
 
-    [Parameter] public int MaxTime { get; set; } = 200;
+    /// <summary>
+    /// 
+    /// </summary>
+    [Parameter] public int MaxDuration { get; set; } = 200;
+
+    /// <summary>
+    /// 
+    /// </summary>
     [Parameter] public double MaxDistance { get; set; } = 10;
+
+    /// <summary>
+    /// 
+    /// </summary>
     [Parameter] public EventCallback<GestureTapEventArgs> OnTap { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [Parameter] public bool AllowDoubleTap { get; set; } = true;
+
+    /// <summary>
+    /// 
+    /// </summary>
     [Parameter] public double MaxDoubleTapDistance { get; set; } = 20;
+
+    /// <summary>
+    /// 
+    /// </summary>
     [Parameter] public EventCallback<GestureTapEventArgs> OnDoubleTap { get; set; }
 
     DateTime lastTapTime;
-    GesturePoint? lastTapPoint;
+    PointerEventArgs? lastTapPoint;
     Timer? timer;
 
+    /// <summary>
+    /// 
+    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -25,6 +56,7 @@ public class TapGestureRecognizer : ComponentBase
             GestureRecognizer.GestureStart += GestureStart;
             GestureRecognizer.GestureMove += GestureMove;
             GestureRecognizer.GestureEnd += GestureEnd;
+            GestureRecognizer.GestureLeave += GestureLeave;
         }
     }
 
@@ -45,21 +77,25 @@ public class TapGestureRecognizer : ComponentBase
 
         AwareTap(e);
     }
+    void GestureLeave(object? sender, GestureEventArgs e)
+    {
+        timer?.Dispose();
+    }
 
     void AwareTap(GestureEventArgs e)
     {
-        if (e.Distance >= MaxDistance)
+        if (e.Distance > MaxDistance)
             return;
 
         if (AllowDoubleTap
-            && (e.StartTime - lastTapTime)?.TotalMilliseconds < MaxTime
+            && (e.StartTime - lastTapTime).TotalMilliseconds < MaxDuration
             && lastTapPoint is not null
             && lastTapPoint.CalcDistance(e.MovePoints[0]) < MaxDoubleTapDistance)
         {
             OnDoubleTap.InvokeAsync(CreateEventArgs("doubletap", e));
             lastTapPoint = null;
         }
-        else if (e.Duration < MaxTime)
+        else if (e.Duration < MaxDuration)
         {
             lastTapTime = DateTime.Now;
             lastTapPoint = e.MovePoints[0];
@@ -69,7 +105,7 @@ public class TapGestureRecognizer : ComponentBase
 
                 OnTap.InvokeAsync(CreateEventArgs("tap", e));
                 lastTapPoint = null;
-            }), MaxTime);
+            }), MaxDuration);
         }
     }
 

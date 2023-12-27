@@ -1,15 +1,27 @@
 ﻿namespace Liyanjie.Blazor.Gestures.Components;
 
-public class PanGestureRecognizer : ComponentBase
+/// <summary>
+/// 
+/// </summary>
+public sealed class PanGestureRecognizer : ComponentBase
 {
-    [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
+    [CascadingParameter] GestureRecognizer? GestureRecognizer { get; set; }
 
-    [Parameter] public int Factor { get; set; } = 5;
+    /// <summary>
+    /// 
+    /// </summary>
     [Parameter] public EventCallback<GesturePanEventArgs> OnPan { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
     [Parameter] public EventCallback<GesturePanEventArgs> OnPanEnd { get; set; }
 
     bool panStart;
 
+    /// <summary>
+    /// 
+    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -18,6 +30,7 @@ public class PanGestureRecognizer : ComponentBase
         {
             GestureRecognizer.GestureMove += GestureMove;
             GestureRecognizer.GestureEnd += GestureEnd;
+            GestureRecognizer.GestureLeave += GestureLeave;
         }
     }
 
@@ -30,6 +43,17 @@ public class PanGestureRecognizer : ComponentBase
         if (panStart)
             AwarePanEnd(e);
 
+        Clear(e);
+    }
+    void GestureLeave(object? sender, GestureEventArgs e)
+    {
+        if (panStart)
+            AwarePanEnd(e);
+
+        Clear(e);
+    }
+    void Clear(GestureEventArgs e)
+    {
         panStart = false;
     }
 

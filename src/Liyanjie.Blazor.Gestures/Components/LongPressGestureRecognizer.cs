@@ -1,15 +1,32 @@
 ﻿namespace Liyanjie.Blazor.Gestures.Components;
 
-public class LongPressGestureRecognizer : ComponentBase
+/// <summary>
+/// 
+/// </summary>
+public sealed class LongPressGestureRecognizer : ComponentBase
 {
-    [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
+    [CascadingParameter] GestureRecognizer? GestureRecognizer { get; set; }
 
-    [Parameter] public int MinTime { get; set; } = 500;
+    /// <summary>
+    /// 
+    /// </summary>
+    [Parameter] public int MinDuration { get; set; } = 500;
+
+    /// <summary>
+    /// 
+    /// </summary>
     [Parameter] public double MaxDistance { get; set; } = 10;
+
+    /// <summary>
+    /// 
+    /// </summary>
     [Parameter] public EventCallback<GestureTapEventArgs> OnLongPress { get; set; }
 
     Timer? timer;
 
+    /// <summary>
+    /// 
+    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -19,6 +36,7 @@ public class LongPressGestureRecognizer : ComponentBase
             GestureRecognizer.GestureStart += GestureStart;
             GestureRecognizer.GestureMove += GestureMove;
             GestureRecognizer.GestureEnd += GestureEnd;
+            GestureRecognizer.GestureLeave += GestureLeave;
         }
     }
 
@@ -30,12 +48,16 @@ public class LongPressGestureRecognizer : ComponentBase
     }
     void GestureMove(object? sender, GestureEventArgs e)
     {
-        if (e.Distance >= MaxDistance)
+        if (e.Distance > MaxDistance)
         {
             timer?.Dispose();
         }
     }
     void GestureEnd(object? sender, GestureEventArgs e)
+    {
+        timer?.Dispose();
+    }
+    void GestureLeave(object? sender, GestureEventArgs e)
     {
         timer?.Dispose();
     }
@@ -46,9 +68,9 @@ public class LongPressGestureRecognizer : ComponentBase
         {
             timer?.Dispose();
 
-            if (e.Distance < MaxDistance)
+            if (e.Distance <= MaxDistance)
                 InvokeAsync(() => OnLongPress.InvokeAsync(CreateEventArgs("longpress", e)));
-        }, MinTime);
+        }, MinDuration);
     }
 
     GestureTapEventArgs CreateEventArgs(string type, GestureEventArgs e)

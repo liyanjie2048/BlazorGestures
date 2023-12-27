@@ -16,11 +16,12 @@ Blazor手势识别
         }
     </style>
     <div class="gesture-area"
-         @onpointerdown=@(e=>gestureRecognizer?.PointerStart(e)) @onpointerdown:preventDefault
-         @onpointermove=@(e=>gestureRecognizer?.PointerMove(e)) @onpointermove:preventDefault
-         @onpointerup=@(e=>gestureRecognizer?.PointerEnd(e)) @onpointerup:preventDefault>
+         @onpointerdown=@(e=>gestureRecognizer?.PointerDown(e)) @onpointerdown:preventDefault @onpointerdown:stopPropagation
+         @onpointermove=@(e=>gestureRecognizer?.PointerMove(e)) @onpointermove:preventDefault @onpointermove:stopPropagation
+         @onpointerup=@(e=>gestureRecognizer?.PointerUp(e)) @onpointerup:preventDefault @onpointerup:stopPropagation
+         @onpointerleave=@(e=>gestureRecognizer?.PointerLeave(e)) @onpointerleave:preventDefault @onpointerleave:stopPropagation>
     </div>
-    <GestureRecognizer @ref=@(gestureRecognizer) Enable=@(true)>
+    <GestureRecognizer @ref=@(gestureRecognizer)>
         //Recognizers here
     </GestureRecognizer>
     @code{
@@ -38,7 +39,7 @@ Blazor手势识别
             user-select: none !important
         }
     </style>
-    <GestureArea @ref=@(gestureArea) Enable=@(true) class="gesture-area">
+    <GestureArea @ref=@(gestureArea) class="gesture-area">
         <ChildContent>
             //ChildContent here
         </ChildContent>
@@ -51,7 +52,7 @@ Blazor手势识别
   - Usage
     ```html
     <GestureRecognizer>
-        <LongPressGestureRecognizer MinTime="default 500"  //识别为LongPress的最小millionseconds
+        <LongPressGestureRecognizer MinDuration="default 500"  //识别为LongPress的最小millionseconds
                                     MaxDistance="default 10"  //识别为Tap的最大pointermove distance
                                     OnLongPress="callback" />
     </GestureRecognizer>
@@ -91,7 +92,7 @@ Blazor手势识别
     ```html
     <GestureRecognizer>
         <SwipeGestureRecognizer Direction="default Horizontal"  //可以组合：Up|Down==Vertical or Left|Right == Horizontal or Up|Down|Left|Right == Horizontal|Vertical
-                                MaxTime="default 300"  //识别SwipeUp、SwipeDown、SwipeLeft、SwipeRight的最大millionseconds
+                                MaxDuration="default 300"  //识别SwipeUp、SwipeDown、SwipeLeft、SwipeRight的最大millionseconds
                                 MinDistance="default 20"  //识别为Tap的最大pointermove distance
                                 OnSwipe="callback"
                                 OnSwipeEnd="callback"
@@ -106,7 +107,7 @@ Blazor手势识别
     ```html
     <GestureRecognizer>
         <TapGestureRecognizer MaxDistance="default 10"  //识别为Tap的最大pointermove distance
-                              MaxTime="default 300"  //识别DoubleTap的最大millionseconds
+                              MaxDuration="default 300"  //识别DoubleTap的最大millionseconds
                               OnTap="callback"
                               AllowDoubleTap="default true"
                               MaxDoubleTapDistance="default 20"  识别为DoubleTap的最大pointermove distance
@@ -118,7 +119,7 @@ Blazor手势识别
     public class CustomGestureRecognizer : ComponentBase
     {
         //Parent GestureRecognizer node
-        [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
+        [CascadingParameter] GestureRecognizer? GestureRecognizer { get; set; }
 
         protected override void OnInitialized()
         {
@@ -126,21 +127,26 @@ Blazor手势识别
 
             if (GestureRecognizer is not null)
             {
-                GestureRecognizer.GestureStarted += GestureStarted;
-                GestureRecognizer.GestureMoved += GestureMoved;
-                GestureRecognizer.GestureEnded += GestureEnded;
+                GestureRecognizer.GestureStart += GestureStart;
+                GestureRecognizer.GestureMove += GestureMove;
+                GestureRecognizer.GestureEnd += GestureEnd;
+                GestureRecognizer.GestureLeave += GestureLeave;
             }
         }
 
-        void GestureStarted(object? sender, GestureEventArgs e)
+        void GestureStart(object? sender, GestureEventArgs e)
         {
             //Code here
         }
-        void GestureMoved(object? sender, GestureEventArgs e)
+        void GestureMove(object? sender, GestureEventArgs e)
         {
             //Code here
         }
-        void GestureEnded(object? sender, GestureEventArgs e)
+        void GestureEnd(object? sender, GestureEventArgs e)
+        {
+            //Code here
+        }
+        void GestureLeave(object? sender, GestureEventArgs e)
         {
             //Code here
         }

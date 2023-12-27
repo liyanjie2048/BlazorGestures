@@ -17,12 +17,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Packages.props = Directory.Packages.props
 		LICENSE = LICENSE
 		liyanjie.net.256.png = liyanjie.net.256.png
-		NuGet.config = NuGet.config
 		Push.bat = Push.bat
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Liyanjie.Blazor.Gestures.Sample", "sample\Liyanjie.Blazor.Gestures.Sample\Liyanjie.Blazor.Gestures.Sample.csproj", "{0449DECD-538D-453A-B613-6A86800F7E3B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Liyanjie.Blazor.Gestures.Sample.Client", "sample\Liyanjie.Blazor.Gestures.Sample.Client\Liyanjie.Blazor.Gestures.Sample.Client.csproj", "{622D0CA2-DB5A-4419-9B08-6CEB7431EBCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +39,10 @@ Global
 		{0449DECD-538D-453A-B613-6A86800F7E3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0449DECD-538D-453A-B613-6A86800F7E3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0449DECD-538D-453A-B613-6A86800F7E3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{622D0CA2-DB5A-4419-9B08-6CEB7431EBCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{622D0CA2-DB5A-4419-9B08-6CEB7431EBCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{622D0CA2-DB5A-4419-9B08-6CEB7431EBCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{622D0CA2-DB5A-4419-9B08-6CEB7431EBCA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,6 +50,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D556F1B8-5783-4E0C-86D2-6B5FBA226146} = {BD758CF9-D5B8-494F-941A-1CA402BFFB3B}
 		{0449DECD-538D-453A-B613-6A86800F7E3B} = {FC0A3420-01CB-4F1D-98BD-060B1DC5FA66}
+		{622D0CA2-DB5A-4419-9B08-6CEB7431EBCA} = {FC0A3420-01CB-4F1D-98BD-060B1DC5FA66}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E16ACE10-5DD9-48BF-AA96-44E78AB00C34}

@@ -1,19 +1,44 @@
 ﻿namespace Liyanjie.Blazor.Gestures.Components;
 
-public class RotateGestureRecognizer : ComponentBase
+/// <summary>
+/// 
+/// </summary>
+public sealed class RotateGestureRecognizer : ComponentBase
 {
-    [CascadingParameter] public GestureRecognizer? GestureRecognizer { get; set; }
+    [CascadingParameter] GestureRecognizer? GestureRecognizer { get; set; }
 
-    [Parameter] public double MinAngle { get; set; } = 30;
+    /// <summary>
+    /// 
+    /// </summary>
+    [Parameter] public double MinAngle { get; set; } = 10;
+
+    /// <summary>
+    /// 
+    /// </summary>
     [Parameter] public EventCallback<GestureRotateEventArgs> OnRotate { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
     [Parameter] public EventCallback<GestureRotateEventArgs> OnRotateEnd { get; set; }
-    [Parameter] public EventCallback<GestureRotateEventArgs> OnRotateLeft { get; set; }
-    [Parameter] public EventCallback<GestureRotateEventArgs> OnRotateRight { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [Parameter] public EventCallback<GestureRotateEventArgs> OnRotateCW { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [Parameter] public EventCallback<GestureRotateEventArgs> OnRotateCCW { get; set; }
 
     bool rotateStart;
     double lastAngle;
     double angleChange;
 
+    /// <summary>
+    /// 
+    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -23,6 +48,7 @@ public class RotateGestureRecognizer : ComponentBase
             GestureRecognizer.GestureStart += GestureStart;
             GestureRecognizer.GestureMove += GestureMove;
             GestureRecognizer.GestureEnd += GestureEnd;
+            GestureRecognizer.GestureLeave += GestureLeave;
         }
     }
 
@@ -51,6 +77,18 @@ public class RotateGestureRecognizer : ComponentBase
         if (rotateStart)
             AwareRotateEnd(e);
 
+        Clear(e);
+    }
+    void GestureLeave(object? sender, GestureEventArgs e)
+    {
+        if (e.MovePoints.Count < 2)
+            return;
+
+        if (rotateStart)
+            AwareRotateEnd(e);
+    }
+    void Clear(GestureEventArgs e)
+    {
         rotateStart = false;
         lastAngle = 0;
         angleChange = 0;
@@ -71,11 +109,11 @@ public class RotateGestureRecognizer : ComponentBase
         {
             if (angleChange > 0)
             {
-                OnRotateRight.InvokeAsync(CreateEventArgs("rotateright", e));
+                OnRotateCW.InvokeAsync(CreateEventArgs("rotatecw", e));
             }
             else
             {
-                OnRotateLeft.InvokeAsync(CreateEventArgs("rotateleft", e));
+                OnRotateCCW.InvokeAsync(CreateEventArgs("rotateccw", e));
             }
         }
     }
@@ -89,7 +127,6 @@ public class RotateGestureRecognizer : ComponentBase
             value = 360 - value;
         else if (value < -180)
             value = 360 + value;
-        Console.WriteLine(value);
         return value;
     }
 

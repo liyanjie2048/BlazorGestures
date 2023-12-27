@@ -7,14 +7,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Liyanjie.Blazor.Gestures\Liyanjie.Blazor.Gestures.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
 		<PackageReference Include="Microsoft.Net.Compilers.Razor.Toolset">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Liyanjie.Blazor.Gestures.Sample.Client\Liyanjie.Blazor.Gestures.Sample.Client.csproj" />
 	</ItemGroup>
 
 </Project>

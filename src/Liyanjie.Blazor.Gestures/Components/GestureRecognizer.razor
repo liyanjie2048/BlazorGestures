@@ -4,73 +4,71 @@
     [Parameter] public bool Enable { get; set; } = true;
     [Parameter] public RenderFragment ChildContent { get; set; } = default!;
 
-    Dictionary<long, GesturePoint> startPoints { get; set; } = [];
-    Dictionary<long, GesturePoint> movePoints { get; set; } = [];
+    Dictionary<long, PointerEventArgs> startPoints { get; set; } = [];
+    Dictionary<long, PointerEventArgs> movePoints { get; set; } = [];
+    bool hasPrimaryPoint => movePoints.Any(_ => _.Value.IsPrimary);
 
-    public bool Started { get; private set; }
+    public bool Active { get; private set; }
     public DateTime? StartTime { get; private set; }
 
     public event EventHandler<GestureEventArgs>? GestureStart;
     public event EventHandler<GestureEventArgs>? GestureMove;
     public event EventHandler<GestureEventArgs>? GestureEnd;
+    public event EventHandler<GestureEventArgs>? GestureLeave;
 
-    public void PointerStart(PointerEventArgs e)
+    public void PointerDown(PointerEventArgs e)
     {
         if (!Enable)
             return;
 
-        Started = true;
+        Active = true;
         StartTime = DateTime.Now;
 
-        startPoints[e.PointerId] = GetTouchPoint(e);
-        movePoints[e.PointerId] = GetTouchPoint(e);
+        startPoints[e.PointerId] = e;
+        movePoints[e.PointerId] = e;
 
-        GestureStart?.Invoke(this, CreateEventArgs(e));
+        GestureStart?.Invoke(this, CreateEventArgs(nameof(GestureStart).ToLower(), e));
     }
     public void PointerMove(PointerEventArgs e)
     {
-        if (!Enable)
-            return;
+        movePoints[e.PointerId] = e;
 
-        if (!Started)
-            return;
-
-        movePoints[e.PointerId] = GetTouchPoint(e);
-
-        GestureMove?.Invoke(this, CreateEventArgs(e));
+        if (Active && hasPrimaryPoint)
+            GestureMove?.Invoke(this, CreateEventArgs(nameof(GestureMove).ToLower(), e));
     }
-    public void PointerEnd(PointerEventArgs e)
+    public void PointerUp(PointerEventArgs e)
     {
-        if (!Enable)
-            return;
+        if (Active && hasPrimaryPoint)
+            GestureEnd?.Invoke(this, CreateEventArgs(nameof(GestureEnd).ToLower(), e));
 
-        if (!Started)
-            return;
+        Clear(e);
+    }
+    public void PointerLeave(PointerEventArgs e)
+    {
+        if (Active && hasPrimaryPoint)
+            GestureLeave?.Invoke(this, CreateEventArgs(nameof(GestureLeave).ToLower(), e));
 
-        GestureEnd?.Invoke(this, CreateEventArgs(e));
-
+        Clear(e);
+    }
+    void Clear(PointerEventArgs e)
+    {
         startPoints.Remove(e.PointerId);
         movePoints.Remove(e.PointerId);
-        if (startPoints.Count == 0 || movePoints.Count == 0)
+        if (e.IsPrimary)
         {
-            Started = false;
+            Active = false;
             StartTime = null;
         }
     }
 
-    GestureEventArgs CreateEventArgs(PointerEventArgs e)
+    GestureEventArgs CreateEventArgs(string type, PointerEventArgs e)
     {
         return new()
             {
-                Type = e.Type,
-                StartPoints = startPoints.Values.OrderBy(_ => _.Identifier).ToArray(),
-                MovePoints = movePoints.Values.OrderBy(_ => _.Identifier).ToArray(),
-                StartTime = StartTime,
+                Type = type,
+                StartTime = StartTime!.Value,
+                StartPoints = startPoints.Values.OrderBy(_ => _.PointerId).ToArray(),
+                MovePoints = movePoints.Values.OrderBy(_ => _.PointerId).ToArray(),
             };
-    }
-
-    static GesturePoint GetTouchPoint(PointerEventArgs e)
-    {
-        return new(e.PointerId, e.ClientX, e.ClientY);
     }
 }

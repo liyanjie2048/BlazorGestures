@@ -4,14 +4,14 @@
              Enable=@(true) class="gesturearea">
     <ChildContent>
         <div>
-            <p>开始:@(gestureArea?.GestureRecognizer?.Started)</p>
+            <p>有效:@(gestureArea?.GestureRecognizer?.Active)</p>
             <p>
                 时长:@(gesture?.Duration)<br />
                 距离:@(gesture?.Distance.ToString("0.0"))(X:@(gesture?.DistanceX.ToString("0.0")),Y:@(gesture?.DistanceY.ToString("0.0")))<br />
                 角度:@(gesture?.Angle.ToString("0.0"))<br />
                 方向:@(gesture?.Direction)<br />
                 数量:@(gesture?.PointerCount)<br />
-                (@(gesture?.StartPoints[0].X),@(gesture?.StartPoints[0].Y))→(@(gesture?.MovePoints[0].X),@(gesture?.MovePoints[0].Y))
+                (@(gesture?.StartPoints[0].ScreenX),@(gesture?.StartPoints[0].ScreenY))→(@(gesture?.MovePoints[0].ScreenX),@(gesture?.MovePoints[0].ScreenY))
             </p>
             <p>@(tap) @(longpress) @(pan) @(swipe)</p>
             <p>@(pinch)</p>
@@ -22,12 +22,13 @@
         <TapGestureRecognizer OnTap=@(ShowTapData)
                               AllowDoubleTap=@(true) OnDoubleTap=@(ShowTapData) />
         <LongPressGestureRecognizer OnLongPress=@(ShowLongPressData) />
-        <PanGestureRecognizer OnPan=@(ShowPanData) />
-        <SwipeGestureRecognizer Direction=@(GestureDirection.Horizontal|GestureDirection.Vertical) OnSwipe=@(ShowSwipeData)
+        <PanGestureRecognizer OnPan=@(ShowPanData) OnPanEnd=@(ShowPanData) />
+        <SwipeGestureRecognizer Direction=@(GestureDirection.Horizontal|GestureDirection.Vertical)
+                                OnSwipe=@(ShowSwipeData) OnSwipeEnd=@(ShowSwipeData)
                                 OnSwipeUp=@(ShowSwipeData) OnSwipeDown=@(ShowSwipeData)
                                 OnSwipeLeft=@(ShowSwipeData) OnSwipeRight=@(ShowSwipeData) />
-        <PinchGestureRecognizer OnPinch=@(ShowPinchData) OnPinchIn=@(ShowPinchData) OnPinchOut=@(ShowPinchData) />
-        <RotateGestureRecognizer OnRotate=@(ShowRotateData) OnRotateLeft=@(ShowRotateData) OnRotateRight=@(ShowRotateData) />
+        <PinchGestureRecognizer OnPinch=@(ShowPinchData) OnPinchEnd=@(ShowPinchData) OnPinchIn=@(ShowPinchData) OnPinchOut=@(ShowPinchData) />
+        <RotateGestureRecognizer OnRotate=@(ShowRotateData) OnRotateEnd=@(ShowRotateData) OnRotateCW=@(ShowRotateData) OnRotateCCW=@(ShowRotateData) />
     </Recognizers>
 </GestureArea>
 

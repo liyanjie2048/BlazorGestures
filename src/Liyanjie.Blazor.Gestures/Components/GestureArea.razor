@@ -1,7 +1,16 @@
 ﻿<div @attributes=@(Attributes)
-     @onpointerdown=@(e=>GestureRecognizer?.PointerStart(e)) @onpointerdown:preventDefault
-     @onpointermove=@(e=>GestureRecognizer?.PointerMove(e)) @onpointermove:preventDefault
-     @onpointerup=@(e=>GestureRecognizer?.PointerEnd(e)) @onpointerup:preventDefault>
+     @onpointerdown=@(e=>GestureRecognizer?.PointerDown(e))
+     @onpointerdown:preventDefault=@(PreventDefault)
+     @onpointerdown:stopPropagation=@(StopPropagation)
+     @onpointermove=@(e=>GestureRecognizer?.PointerMove(e))
+     @onpointermove:preventDefault=@(PreventDefault)
+     @onpointermove:stopPropagation=@(StopPropagation)
+     @onpointerup=@(e=>GestureRecognizer?.PointerUp(e))
+     @onpointerup:preventDefault=@(PreventDefault)
+     @onpointerup:stopPropagation=@(StopPropagation)
+     @onpointerleave=@(e=>GestureRecognizer?.PointerLeave(e))
+     @onpointerleave:preventDefault=@(PreventDefault)
+     @onpointerleave:stopPropagation=@(StopPropagation)>
     @(ChildContent)
 </div>
 <GestureRecognizer @ref=@(GestureRecognizer) Enable=@(Enable)>
@@ -10,11 +19,13 @@
 
 @code {
     [Parameter] public bool Enable { get; set; } = true;
+    [Parameter] public bool PreventDefault { get; set; } = true;
+    [Parameter] public bool StopPropagation { get; set; } = true;
     [Parameter] public RenderFragment ChildContent { get; set; } = default!;
     [Parameter] public RenderFragment Recognizers { get; set; } = default!;
 
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> Attributes { get; set; } = default!;
+    public Dictionary<string, object?> Attributes { get; set; } = default!;
 
     public GestureRecognizer? GestureRecognizer { get; private set; }
 }
