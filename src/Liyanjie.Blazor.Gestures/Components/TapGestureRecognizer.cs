@@ -23,7 +23,7 @@ public sealed class TapGestureRecognizer : ComponentBase
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureTapEventArgs> OnTap { get; set; }
+    [Parameter] public EventCallback<TapGestureEventArgs> OnTap { get; set; }
 
     /// <summary>
     /// 
@@ -38,7 +38,7 @@ public sealed class TapGestureRecognizer : ComponentBase
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureTapEventArgs> OnDoubleTap { get; set; }
+    [Parameter] public EventCallback<TapGestureEventArgs> OnDoubleTap { get; set; }
 
     DateTime lastTapTime;
     PointerEventArgs? lastTapPoint;
@@ -109,11 +109,5 @@ public sealed class TapGestureRecognizer : ComponentBase
         }
     }
 
-    GestureTapEventArgs CreateEventArgs(string type, GestureEventArgs e)
-    {
-        return new(e)
-        {
-            Type = type,
-        };
-    }
+    TapGestureEventArgs CreateEventArgs(string type, GestureEventArgs e) => new(e, type);
 }

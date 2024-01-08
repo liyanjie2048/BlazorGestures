@@ -3,43 +3,12 @@
 /// <summary>
 /// 
 /// </summary>
-public record GestureEventArgs
+public record GestureEventArgs(
+    string Type,
+    DateTime StartTime,
+    IReadOnlyList<PointerEventArgs> StartPoints,
+    IReadOnlyList<PointerEventArgs> MovePoints)
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public string? Type { get; init; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public
-#if NET8_0_OR_GREATER
-        required
-#endif
-        DateTime StartTime
-    { get; init; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public
-#if NET8_0_OR_GREATER
-        required
-#endif
-        IReadOnlyList<PointerEventArgs> StartPoints
-    { get; init; } = default!;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public
-#if NET8_0_OR_GREATER
-        required
-#endif
-        IReadOnlyList<PointerEventArgs> MovePoints
-    { get; init; } = default!;
-
     internal IEnumerable<(PointerEventArgs MovePoint, PointerEventArgs StartPoint)> CurrentPoints => MovePoints
         .Select(_ => (MovePoint: _, StartPoint: StartPoints.SingleOrDefault(__ => __.PointerId == _.PointerId)))
         .Where(_ => _.StartPoint is not null)
@@ -73,15 +42,7 @@ public record GestureEventArgs
     /// <summary>
     /// 
     /// </summary>
-    public double Distance
-    {
-        get
-        {
-            var x = DistanceX;
-            var y = DistanceY;
-            return Math.Sqrt((x * x) + (y * y));
-        }
-    }
+    public double Distance => Math.Sqrt((DistanceX * DistanceX) + (DistanceY * DistanceY));
 
     /// <summary>
     /// 
@@ -93,10 +54,10 @@ public record GestureEventArgs
     /// </summary>
     public GestureDirection Direction => Angle switch
     {
-        var v when v < -45 && v > -135 => GestureDirection.Up,
-        var v when v >= 45 && v < 135 => GestureDirection.Down,
-        var v when v >= 135 || v <= -135 => GestureDirection.Left,
-        var v when v >= -45 && v <= 45 => GestureDirection.Right,
+        var v when v < -45 && v >= -135 => GestureDirection.Up,
+        var v when v < -135 || v >= 135 => GestureDirection.Left,
+        var v when v < 135 && v >= 45 => GestureDirection.Down,
+        var v when v < 45 && v >= -45 => GestureDirection.Right,
         _ => 0,
     };
 }

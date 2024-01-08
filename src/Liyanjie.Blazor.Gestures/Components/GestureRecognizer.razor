@@ -55,23 +55,18 @@
     }
     void Clear(PointerEventArgs e)
     {
-        startPoints.Remove(e.PointerId);
-        movePoints.Remove(e.PointerId);
         if (e.IsPrimary)
         {
             Active = false;
             StartTime = null;
         }
+        startPoints.Remove(e.PointerId);
+        movePoints.Remove(e.PointerId);
     }
 
-    GestureEventArgs CreateEventArgs(string type, PointerEventArgs e)
-    {
-        return new()
-            {
-                Type = type,
-                StartTime = StartTime!.Value,
-                StartPoints = startPoints.Values.OrderBy(_ => _.PointerId).ToArray(),
-                MovePoints = movePoints.Values.OrderBy(_ => _.PointerId).ToArray(),
-            };
-    }
+    GestureEventArgs CreateEventArgs(string type, PointerEventArgs e) => new(
+        type,
+        StartTime!.Value,
+        startPoints.Values.OrderBy(_ => _.PointerId).ToArray(),
+        movePoints.Values.OrderBy(_ => _.PointerId).ToArray());
 }

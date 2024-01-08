@@ -3,15 +3,14 @@
 <GestureArea @ref=@(gestureArea)
              Enable=@(true) class="gesturearea">
     <ChildContent>
-        <div>
-            <p>有效:@(gestureArea?.GestureRecognizer?.Active)</p>
+        <div class="gestureareaData">
             <p>
-                时长:@(gesture?.Duration)<br />
-                距离:@(gesture?.Distance.ToString("0.0"))(X:@(gesture?.DistanceX.ToString("0.0")),Y:@(gesture?.DistanceY.ToString("0.0")))<br />
-                角度:@(gesture?.Angle.ToString("0.0"))<br />
-                方向:@(gesture?.Direction)<br />
-                数量:@(gesture?.PointerCount)<br />
-                (@(gesture?.StartPoints[0].ScreenX),@(gesture?.StartPoints[0].ScreenY))→(@(gesture?.MovePoints[0].ScreenX),@(gesture?.MovePoints[0].ScreenY))
+                时长:@(e?.Duration)<br />
+                距离:@(e?.Distance.ToString("0.0"))(X:@(e?.DistanceX.ToString("0.0")),Y:@(e?.DistanceY.ToString("0.0")))<br />
+                角度:@(e?.Angle.ToString("0.0"))<br />
+                方向:@(e?.Direction)<br />
+                数量:@(e?.PointerCount)<br />
+                (@(e?.StartPoints[0].ScreenX),@(e?.StartPoints[0].ScreenY))→(@(e?.MovePoints[0].ScreenX),@(e?.MovePoints[0].ScreenY))
             </p>
             <p>@(tap) @(longpress) @(pan) @(swipe)</p>
             <p>@(pinch)</p>
@@ -43,7 +42,7 @@
         {
             gestureArea.GestureRecognizer.GestureStart += (sender, e) =>
             {
-                gesture = null;
+                this.e = null;
                 tap = null;
                 longpress = null;
                 pan = null;
@@ -53,6 +52,13 @@
                 InvokeAsync(StateHasChanged);
             };
         }
+    }
+
+    GestureEventArgs? e;
+    void ShowData(GestureEventArgs e)
+    {
+        this.e = e;
+        InvokeAsync(StateHasChanged);
     }
 
     string? tap;
@@ -68,33 +74,27 @@
         ShowData(e);
     }
     string? pan;
-    void ShowPanData(GesturePanEventArgs e)
+    void ShowPanData(PanGestureEventArgs e)
     {
         pan = $"{e.Type}-√; ";
         ShowData(e);
     }
     string? swipe;
-    void ShowSwipeData(GestureSwipeEventArgs e)
+    void ShowSwipeData(SwipeGestureEventArgs e)
     {
         swipe = $"{e.Type}-√; ";
         ShowData(e);
     }
     string? pinch;
-    void ShowPinchData(GesturePinchEventArgs e)
+    void ShowPinchData(PinchGestureEventArgs e)
     {
         pinch = $"{e.Type}-缩放:{e.Scale:0.0}; ";
         ShowData(e);
     }
     string? rotate;
-    void ShowRotateData(GestureRotateEventArgs e)
+    void ShowRotateData(RotateGestureEventArgs e)
     {
         rotate = $"{e.Type}-旋转:{e.AngleChange:0.0}; ";
         ShowData(e);
-    }
-    GestureEventArgs? gesture;
-    void ShowData(GestureEventArgs e)
-    {
-        gesture = e;
-        InvokeAsync(StateHasChanged);
     }
 }

@@ -6,16 +6,7 @@ Blazor手势识别
     声明手势识别器，用于识别手势
   - Usage
     ```html
-    <style>
-        .gesture-aArea {
-            -webkit-touch-callout: none !important;
-            -webkit-user-select: none !important;
-            -webkit-user-drag: none !important;
-            touch-action: none !important;
-            user-select: none !important
-        }
-    </style>
-    <div class="gesture-area"
+    <div class="gesturearea"
          @onpointerdown=@(e=>gestureRecognizer?.PointerDown(e)) @onpointerdown:preventDefault @onpointerdown:stopPropagation
          @onpointermove=@(e=>gestureRecognizer?.PointerMove(e)) @onpointermove:preventDefault @onpointermove:stopPropagation
          @onpointerup=@(e=>gestureRecognizer?.PointerUp(e)) @onpointerup:preventDefault @onpointerup:stopPropagation
@@ -30,16 +21,7 @@ Blazor手势识别
     ```
   - Also
     ```html
-    <style>
-        .gesture-area {
-            -webkit-touch-callout: none !important;
-            -webkit-user-select: none !important;
-            -webkit-user-drag: none !important;
-            touch-action: none !important;
-            user-select: none !important
-        }
-    </style>
-    <GestureArea @ref=@(gestureArea) class="gesture-area">
+    <GestureArea class="gesturearea">
         <ChildContent>
             //ChildContent here
         </ChildContent>
@@ -80,11 +62,11 @@ Blazor手势识别
   - Usage
     ```html
     <GestureRecognizer>
-        <RotateGestureRecognizer MinAngle="default 10"  //触发RotateLeft、RotateRight的最小angle
+        <RotateGestureRecognizer MinAngle="default 10"  //触发RotateCW、RotateCCW的最小angle
                                  OnRotate="callback"
                                  OnRotateEnd="callback"
-                                 OnRotateLeft="callback"
-                                 OnRotateRight="callback" />
+                                 OnRotateCW="callback"
+                                 OnRotateCCW="callback" />
     </GestureRecognizer>
     ```
 - #### SwipeGestureRecognizer

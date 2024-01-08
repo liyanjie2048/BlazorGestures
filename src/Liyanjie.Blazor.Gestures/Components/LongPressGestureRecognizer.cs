@@ -20,7 +20,7 @@ public sealed class LongPressGestureRecognizer : ComponentBase
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureTapEventArgs> OnLongPress { get; set; }
+    [Parameter] public EventCallback<TapGestureEventArgs> OnLongPress { get; set; }
 
     Timer? timer;
 
@@ -73,11 +73,5 @@ public sealed class LongPressGestureRecognizer : ComponentBase
         }, MinDuration);
     }
 
-    GestureTapEventArgs CreateEventArgs(string type, GestureEventArgs e)
-    {
-        return new(e)
-        {
-            Type = type,
-        };
-    }
+    TapGestureEventArgs CreateEventArgs(string type, GestureEventArgs e) => new(e, type);
 }

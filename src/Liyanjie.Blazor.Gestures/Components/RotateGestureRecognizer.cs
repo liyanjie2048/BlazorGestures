@@ -15,22 +15,22 @@ public sealed class RotateGestureRecognizer : ComponentBase
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureRotateEventArgs> OnRotate { get; set; }
+    [Parameter] public EventCallback<RotateGestureEventArgs> OnRotate { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureRotateEventArgs> OnRotateEnd { get; set; }
+    [Parameter] public EventCallback<RotateGestureEventArgs> OnRotateEnd { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureRotateEventArgs> OnRotateCW { get; set; }
+    [Parameter] public EventCallback<RotateGestureEventArgs> OnRotateCW { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureRotateEventArgs> OnRotateCCW { get; set; }
+    [Parameter] public EventCallback<RotateGestureEventArgs> OnRotateCCW { get; set; }
 
     bool rotateStart;
     double lastAngle;
@@ -72,7 +72,10 @@ public sealed class RotateGestureRecognizer : ComponentBase
     void GestureEnd(object? sender, GestureEventArgs e)
     {
         if (e.MovePoints.Count < 2)
+        {
+            Clear(e);
             return;
+        }
 
         if (rotateStart)
             AwareRotateEnd(e);
@@ -82,10 +85,15 @@ public sealed class RotateGestureRecognizer : ComponentBase
     void GestureLeave(object? sender, GestureEventArgs e)
     {
         if (e.MovePoints.Count < 2)
+        {
+            Clear(e);
             return;
+        }
 
         if (rotateStart)
             AwareRotateEnd(e);
+
+        Clear(e);
     }
     void Clear(GestureEventArgs e)
     {
@@ -130,14 +138,10 @@ public sealed class RotateGestureRecognizer : ComponentBase
         return value;
     }
 
-    GestureRotateEventArgs CreateEventArgs(
+    RotateGestureEventArgs CreateEventArgs(
         string type,
-        GestureEventArgs e)
-    {
-        return new(e)
+        GestureEventArgs e) => new(e, type)
         {
-            Type = type,
             AngleChange = angleChange,
         };
-    }
 }

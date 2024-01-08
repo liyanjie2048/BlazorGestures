@@ -15,22 +15,22 @@ public sealed class PinchGestureRecognizer : ComponentBase
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GesturePinchEventArgs> OnPinch { get; set; }
+    [Parameter] public EventCallback<PinchGestureEventArgs> OnPinch { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GesturePinchEventArgs> OnPinchEnd { get; set; }
+    [Parameter] public EventCallback<PinchGestureEventArgs> OnPinchEnd { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GesturePinchEventArgs> OnPinchIn { get; set; }
+    [Parameter] public EventCallback<PinchGestureEventArgs> OnPinchIn { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GesturePinchEventArgs> OnPinchOut { get; set; }
+    [Parameter] public EventCallback<PinchGestureEventArgs> OnPinchOut { get; set; }
 
     double startDistance;
     double scale = 1;
@@ -71,7 +71,10 @@ public sealed class PinchGestureRecognizer : ComponentBase
     void GestureEnd(object? sender, GestureEventArgs e)
     {
         if (e.MovePoints.Count < 2)
+        {
+            Clear(e);
             return;
+        }
 
         if (pinchStart)
             AwarePinchEnd(e);
@@ -81,7 +84,10 @@ public sealed class PinchGestureRecognizer : ComponentBase
     void GestureLeave(object? sender, GestureEventArgs e)
     {
         if (e.MovePoints.Count < 2)
+        {
+            Clear(e);
             return;
+        }
 
         if (pinchStart)
             AwarePinchEnd(e);
@@ -119,14 +125,10 @@ public sealed class PinchGestureRecognizer : ComponentBase
         }
     }
 
-    GesturePinchEventArgs CreateEventArgs(
+    PinchGestureEventArgs CreateEventArgs(
         string type,
-        GestureEventArgs e)
-    {
-        return new(e)
+        GestureEventArgs e) => new(e, type)
         {
-            Type = type,
             Scale = scale,
         };
-    }
 }

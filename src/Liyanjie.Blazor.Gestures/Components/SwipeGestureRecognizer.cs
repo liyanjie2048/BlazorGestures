@@ -25,32 +25,32 @@ public sealed class SwipeGestureRecognizer : ComponentBase
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureSwipeEventArgs> OnSwipe { get; set; }
+    [Parameter] public EventCallback<SwipeGestureEventArgs> OnSwipe { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureSwipeEventArgs> OnSwipeEnd { get; set; }
+    [Parameter] public EventCallback<SwipeGestureEventArgs> OnSwipeEnd { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureSwipeEventArgs> OnSwipeLeft { get; set; }
+    [Parameter] public EventCallback<SwipeGestureEventArgs> OnSwipeLeft { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureSwipeEventArgs> OnSwipeRight { get; set; }
+    [Parameter] public EventCallback<SwipeGestureEventArgs> OnSwipeRight { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureSwipeEventArgs> OnSwipeUp { get; set; }
+    [Parameter] public EventCallback<SwipeGestureEventArgs> OnSwipeUp { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GestureSwipeEventArgs> OnSwipeDown { get; set; }
+    [Parameter] public EventCallback<SwipeGestureEventArgs> OnSwipeDown { get; set; }
 
     bool swipeStart;
 
@@ -108,40 +108,30 @@ public sealed class SwipeGestureRecognizer : ComponentBase
 
         OnSwipeEnd.InvokeAsync(CreateEventArgs("swipeend", e));
 
-        if (e.Duration < MaxDuration && e.Direction switch
+        if (e.Duration < MaxDuration)
         {
-            GestureDirection.Up or GestureDirection.Down or GestureDirection.Vertical => Math.Abs(e.DistanceY) >= MinDistance,
-            GestureDirection.Left or GestureDirection.Right or GestureDirection.Horizontal => Math.Abs(e.DistanceX) >= MinDistance,
-            _ => false
-        })
-        {
-            var type = e.Direction switch
+            if (Math.Abs(e.DistanceY) >= MinDistance)
             {
-                GestureDirection.Up => "swipeup",
-                GestureDirection.Down => "swipedown",
-                GestureDirection.Left => "swipeleft",
-                GestureDirection.Right => "swiperight",
-                _ => string.Empty,
-            };
-            var eventArgs = CreateEventArgs(type, e);
-            _ = e.Direction switch
+                _ = e.Direction switch
+                {
+                    GestureDirection.Up => OnSwipeUp.InvokeAsync(CreateEventArgs("swipeup", e)),
+                    GestureDirection.Down => OnSwipeDown.InvokeAsync(CreateEventArgs("swipedown", e)),
+                    _ => Task.CompletedTask,
+                };
+            }
+            if (Math.Abs(e.DistanceX) >= MinDistance)
             {
-                GestureDirection.Up => OnSwipeUp.InvokeAsync(eventArgs),
-                GestureDirection.Down => OnSwipeDown.InvokeAsync(eventArgs),
-                GestureDirection.Left => OnSwipeLeft.InvokeAsync(eventArgs),
-                GestureDirection.Right => OnSwipeRight.InvokeAsync(eventArgs),
-                _ => Task.CompletedTask,
-            };
+                _ = e.Direction switch
+                {
+                    GestureDirection.Left => OnSwipeLeft.InvokeAsync(CreateEventArgs("swipeleft", e)),
+                    GestureDirection.Right => OnSwipeRight.InvokeAsync(CreateEventArgs("swiperight", e)),
+                    _ => Task.CompletedTask,
+                };
+            }
         }
     }
 
-    GestureSwipeEventArgs CreateEventArgs(
+    SwipeGestureEventArgs CreateEventArgs(
         string type,
-        GestureEventArgs e)
-    {
-        return new(e)
-        {
-            Type = type,
-        };
-    }
+        GestureEventArgs e) => new(e, type);
 }

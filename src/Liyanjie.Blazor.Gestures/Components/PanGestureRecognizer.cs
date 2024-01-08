@@ -10,12 +10,12 @@ public sealed class PanGestureRecognizer : ComponentBase
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GesturePanEventArgs> OnPan { get; set; }
+    [Parameter] public EventCallback<PanGestureEventArgs> OnPan { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
-    [Parameter] public EventCallback<GesturePanEventArgs> OnPanEnd { get; set; }
+    [Parameter] public EventCallback<PanGestureEventArgs> OnPanEnd { get; set; }
 
     bool panStart;
 
@@ -68,13 +68,7 @@ public sealed class PanGestureRecognizer : ComponentBase
         OnPanEnd.InvokeAsync(CreateEventArgs("panend", e));
     }
 
-    GesturePanEventArgs CreateEventArgs(
+    PanGestureEventArgs CreateEventArgs(
         string type,
-        GestureEventArgs e)
-    {
-        return new(e)
-        {
-            Type = type,
-        };
-    }
+        GestureEventArgs e) => new(e, type);
 }
