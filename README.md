@@ -5,7 +5,7 @@ Blazor手势识别
 - #### GestureRecognizer
     声明手势识别器，用于识别手势
   - Usage
-    ```html
+    ```razor
     <div class="gesturearea"
          @onpointerdown=@(e=>gestureRecognizer?.PointerDown(e)) @onpointerdown:preventDefault @onpointerdown:stopPropagation
          @onpointermove=@(e=>gestureRecognizer?.PointerMove(e)) @onpointermove:preventDefault @onpointermove:stopPropagation
@@ -20,7 +20,7 @@ Blazor手势识别
     }
     ```
   - Also
-    ```html
+    ```razor
     <GestureArea class="gesturearea">
         <ChildContent>
             //ChildContent here
@@ -32,7 +32,7 @@ Blazor手势识别
     ```
 - #### LongPressGestureRecognizer
   - Usage
-    ```html
+    ```razor
     <GestureRecognizer>
         <LongPressGestureRecognizer MinDuration="default 500"  //识别为LongPress的最小millionseconds
                                     MaxDistance="default 10"  //识别为Tap的最大pointermove distance
@@ -41,7 +41,7 @@ Blazor手势识别
     ```
 - #### PanGestureRecognizer
   - Usage
-    ```html
+    ```razor
     <GestureRecognizer>
         <PanGestureRecognizer OnPan="callback"
                               OnPanEnd="callback" />
@@ -49,7 +49,7 @@ Blazor手势识别
     ```
 - #### PinchGestureRecognizer
   - Usage
-    ```html
+    ```razor
     <GestureRecognizer>
         <PinchGestureRecognizer MinScale="default 0"  //触发PinchIn、PinchOut的最小scale
                                 OnPinch="callback"
@@ -60,7 +60,7 @@ Blazor手势识别
     ```
 - #### RotateGestureRecognizer
   - Usage
-    ```html
+    ```razor
     <GestureRecognizer>
         <RotateGestureRecognizer MinAngle="default 10"  //触发RotateCW、RotateCCW的最小angle
                                  OnRotate="callback"
@@ -71,7 +71,7 @@ Blazor手势识别
     ```
 - #### SwipeGestureRecognizer
   - Usage
-    ```html
+    ```razor
     <GestureRecognizer>
         <SwipeGestureRecognizer Direction="default GestureDirection.Horizontal"  //可以组合：Up|Down==Vertical or Left|Right == Horizontal or Up|Down|Left|Right == Horizontal|Vertical
                                 MaxDuration="default 300"  //识别SwipeUp、SwipeDown、SwipeLeft、SwipeRight的最大millionseconds
@@ -86,7 +86,7 @@ Blazor手势识别
     ```
 - #### TapGestureRecognizer
   - Usage
-    ```html
+    ```razor
     <GestureRecognizer>
         <TapGestureRecognizer MaxDuration="default 200"  //识别DoubleTap的最大millionseconds
                               MaxDistance="default 10"  //识别为Tap的最大pointermove distance
