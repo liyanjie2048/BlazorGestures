@@ -1,44 +1,19 @@
 ﻿namespace Liyanjie.Blazor.Gestures.Components;
 
-/// <summary>
-/// 
-/// </summary>
 public sealed class PinchGestureRecognizer : ComponentBase
 {
     [CascadingParameter] GestureRecognizer? GestureRecognizer { get; set; }
 
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public double MinScale { get; set; } = 0;
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<PinchGestureEventArgs> OnPinch { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<PinchGestureEventArgs> OnPinchEnd { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<PinchGestureEventArgs> OnPinchIn { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<PinchGestureEventArgs> OnPinchOut { get; set; }
 
     double startDistance;
     double scale = 1;
     bool pinchStart;
 
-    /// <summary>
-    /// 
-    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();

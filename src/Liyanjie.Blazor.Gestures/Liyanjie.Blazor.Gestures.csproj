@@ -15,10 +15,6 @@
 		<PackageIconUrl />
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
-		<DocumentationFile>bin\Release\Liyanjie.Blazor.Gestures.xml</DocumentationFile>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<None Include="..\..\liyanjie.net.256.png">
 			<Pack>True</Pack>

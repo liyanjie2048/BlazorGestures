@@ -1,27 +1,14 @@
 ﻿namespace Liyanjie.Blazor.Gestures.Components;
 
-/// <summary>
-/// 
-/// </summary>
 public sealed class PanGestureRecognizer : ComponentBase
 {
     [CascadingParameter] GestureRecognizer? GestureRecognizer { get; set; }
 
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<PanGestureEventArgs> OnPan { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<PanGestureEventArgs> OnPanEnd { get; set; }
 
     bool panStart;
 
-    /// <summary>
-    /// 
-    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();

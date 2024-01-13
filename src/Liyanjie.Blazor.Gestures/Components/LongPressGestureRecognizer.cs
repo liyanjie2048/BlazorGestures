@@ -1,32 +1,15 @@
 ﻿namespace Liyanjie.Blazor.Gestures.Components;
 
-/// <summary>
-/// 
-/// </summary>
 public sealed class LongPressGestureRecognizer : ComponentBase
 {
     [CascadingParameter] GestureRecognizer? GestureRecognizer { get; set; }
 
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public int MinDuration { get; set; } = 500;
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public double MaxDistance { get; set; } = 10;
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<TapGestureEventArgs> OnLongPress { get; set; }
 
     Timer? timer;
 
-    /// <summary>
-    /// 
-    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();

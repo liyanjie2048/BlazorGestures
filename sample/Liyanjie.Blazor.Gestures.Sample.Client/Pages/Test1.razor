@@ -5,7 +5,7 @@
      @onpointermove=@(e=>gestureRecognizer?.PointerMove(e)) @onpointermove:preventDefault @onpointermove:stopPropagation
      @onpointerup=@(e=>gestureRecognizer?.PointerUp(e)) @onpointerup:preventDefault @onpointerup:stopPropagation
      @onpointerleave=@(e=>gestureRecognizer?.PointerLeave(e)) @onpointerleave:preventDefault @onpointerleave:stopPropagation>
-    <div class="gestureareaData">
+    <div class="gesturedata">
         <p>
             时长:@(e?.Duration)<br />
             距离:@(e?.Distance.ToString("0.0"))(X:@(e?.DistanceX.ToString("0.0")),Y:@(e?.DistanceY.ToString("0.0")))<br />

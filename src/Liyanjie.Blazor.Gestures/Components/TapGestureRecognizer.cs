@@ -1,52 +1,20 @@
 ﻿namespace Liyanjie.Blazor.Gestures.Components;
 
-/// <summary>
-/// 
-/// </summary>
 public sealed class TapGestureRecognizer : ComponentBase
 {
-    /// <summary>
-    /// 
-    /// </summary>
     [CascadingParameter] GestureRecognizer? GestureRecognizer { get; set; }
 
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public int MaxDuration { get; set; } = 200;
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public double MaxDistance { get; set; } = 10;
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<TapGestureEventArgs> OnTap { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public bool AllowDoubleTap { get; set; } = true;
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public double MaxDoubleTapDistance { get; set; } = 20;
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<TapGestureEventArgs> OnDoubleTap { get; set; }
 
     DateTime lastTapTime;
     PointerEventArgs? lastTapPoint;
     Timer? timer;
 
-    /// <summary>
-    /// 
-    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();

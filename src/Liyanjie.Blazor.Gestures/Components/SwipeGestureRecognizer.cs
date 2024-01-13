@@ -1,62 +1,20 @@
 ﻿namespace Liyanjie.Blazor.Gestures.Components;
 
-/// <summary>
-/// 
-/// </summary>
 public sealed class SwipeGestureRecognizer : ComponentBase
 {
     [CascadingParameter] GestureRecognizer? GestureRecognizer { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public GestureDirection Direction { get; set; } = GestureDirection.Horizontal;
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public double MaxDuration { get; set; } = 300;
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public double MinDistance { get; set; } = 20;
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<SwipeGestureEventArgs> OnSwipe { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<SwipeGestureEventArgs> OnSwipeEnd { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<SwipeGestureEventArgs> OnSwipeLeft { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<SwipeGestureEventArgs> OnSwipeRight { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<SwipeGestureEventArgs> OnSwipeUp { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<SwipeGestureEventArgs> OnSwipeDown { get; set; }
 
     bool swipeStart;
 
-    /// <summary>
-    /// 
-    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();

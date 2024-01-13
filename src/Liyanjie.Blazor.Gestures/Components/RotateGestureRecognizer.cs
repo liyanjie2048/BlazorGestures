@@ -1,44 +1,19 @@
 ﻿namespace Liyanjie.Blazor.Gestures.Components;
 
-/// <summary>
-/// 
-/// </summary>
 public sealed class RotateGestureRecognizer : ComponentBase
 {
     [CascadingParameter] GestureRecognizer? GestureRecognizer { get; set; }
 
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public double MinAngle { get; set; } = 10;
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<RotateGestureEventArgs> OnRotate { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<RotateGestureEventArgs> OnRotateEnd { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<RotateGestureEventArgs> OnRotateCW { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
     [Parameter] public EventCallback<RotateGestureEventArgs> OnRotateCCW { get; set; }
 
     bool rotateStart;
     double lastAngle;
     double angleChange;
 
-    /// <summary>
-    /// 
-    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();

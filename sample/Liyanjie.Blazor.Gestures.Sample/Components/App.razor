@@ -15,8 +15,8 @@
             -webkit-touch-callout: none !important;
             -webkit-user-select: none !important;
             -webkit-user-drag: none !important;
-            touch-action: none !important;
             user-select: none !important;
+            position: relative;
             width: 60vw;
             height: 60vh;
             margin: 20vh 20vw;
@@ -27,8 +27,12 @@
             font-size: 13px;
         }
 
-        .gestureareaData {
-            pointer-events: none;
+        .gesturedata {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #ffcccc;
         }
     </style>
 </head>
