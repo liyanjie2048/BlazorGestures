@@ -7,7 +7,8 @@ public record GestureEventArgs(
     string Type,
     DateTime StartTime,
     IReadOnlyList<PointerEventArgs> StartPoints,
-    IReadOnlyList<PointerEventArgs> MovePoints)
+    IReadOnlyList<PointerEventArgs> MovePoints,
+    int EdgeDistance)
 {
     internal IEnumerable<(PointerEventArgs MovePoint, PointerEventArgs StartPoint)> CurrentPoints => MovePoints
         .Select(_ => (MovePoint: _, StartPoint: StartPoints.SingleOrDefault(__ => __.PointerId == _.PointerId)))
@@ -17,7 +18,12 @@ public record GestureEventArgs(
     /// <summary>
     /// 
     /// </summary>
-    public PointerEventArgs? PrimaryPoint => MovePoints.SingleOrDefault(_ => _.IsPrimary);
+    public PointerEventArgs? StartPrimaryPoint => StartPoints.SingleOrDefault(_ => _.IsPrimary);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public PointerEventArgs? MovePrimaryPoint => MovePoints.SingleOrDefault(_ => _.IsPrimary);
 
     /// <summary>
     /// 
@@ -60,4 +66,40 @@ public record GestureEventArgs(
         var v when v < 45 && v >= -45 => GestureDirection.Right,
         _ => 0,
     };
+    public GestureEdge? StartEdge(int width, int height)
+    {
+        if (this.EdgeDistance <= 0 || this.StartPrimaryPoint is null)
+            return default;
+
+        var edge = GestureEdge.None;
+        if (this.StartPrimaryPoint.OffsetX < this.EdgeDistance)
+            edge |= GestureEdge.Left;
+        if (this.StartPrimaryPoint.OffsetY < this.EdgeDistance)
+            edge |= GestureEdge.Top;
+        if (width > this.StartPrimaryPoint.OffsetX
+           && (width - this.StartPrimaryPoint.OffsetX) < this.EdgeDistance)
+            edge |= GestureEdge.Right;
+        if (height > this.StartPrimaryPoint.OffsetY
+            && (height - this.StartPrimaryPoint.OffsetY) < this.EdgeDistance)
+            edge |= GestureEdge.Bottom;
+        return edge;
+    }
+    public GestureEdge MoveEdge(int width, int height)
+    {
+        if (this.EdgeDistance <= 0 || this.MovePrimaryPoint is null)
+            return default;
+
+        var edge = GestureEdge.None;
+        if (this.MovePrimaryPoint.OffsetX < this.EdgeDistance)
+            edge |= GestureEdge.Left;
+        if (this.MovePrimaryPoint.OffsetY < this.EdgeDistance)
+            edge |= GestureEdge.Top;
+        if (width > this.MovePrimaryPoint.OffsetX
+            && (width - this.MovePrimaryPoint.OffsetX) < this.EdgeDistance)
+            edge |= GestureEdge.Right;
+        if (height > this.MovePrimaryPoint.OffsetY
+            && (height - this.MovePrimaryPoint.OffsetY) < this.EdgeDistance)
+            edge |= GestureEdge.Bottom;
+        return edge;
+    }
 }

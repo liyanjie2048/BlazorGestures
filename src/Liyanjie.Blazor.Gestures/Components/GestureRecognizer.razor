@@ -1,6 +1,7 @@
 ﻿<CascadingValue Value=@(this)>@(ChildContent)</CascadingValue>
 
 @code {
+    [Parameter] public int EdgeDistance { get; set; } = 75;
     [Parameter] public bool Enable { get; set; } = true;
     [Parameter] public RenderFragment ChildContent { get; set; } = default!;
 
@@ -69,5 +70,6 @@
         type,
         StartTime!.Value,
         startPoints.Values.OrderBy(_ => _.PointerId).ToArray(),
-        movePoints.Values.OrderBy(_ => _.PointerId).ToArray());
+        movePoints.Values.OrderBy(_ => _.PointerId).ToArray(),
+        EdgeDistance);
 }

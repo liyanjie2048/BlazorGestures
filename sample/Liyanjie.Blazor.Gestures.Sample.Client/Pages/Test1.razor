@@ -1,6 +1,6 @@
 ﻿@page "/1"
 
-<div class="gesturearea"
+<div class="gesturearea" style="width:300px;height:300px;"
      @onpointerdown=@(e=>gestureRecognizer?.PointerDown(e)) @onpointerdown:preventDefault @onpointerdown:stopPropagation
      @onpointermove=@(e=>gestureRecognizer?.PointerMove(e)) @onpointermove:preventDefault @onpointermove:stopPropagation
      @onpointerup=@(e=>gestureRecognizer?.PointerUp(e)) @onpointerup:preventDefault @onpointerup:stopPropagation
@@ -12,7 +12,9 @@
             角度:@(e?.Angle.ToString("0.0"))<br />
             方向:@(e?.Direction)<br />
             数量:@(e?.PointerCount)<br />
-            (@(e?.StartPoints[0].ScreenX),@(e?.StartPoints[0].ScreenY))→(@(e?.MovePoints[0].ScreenX),@(e?.MovePoints[0].ScreenY))
+            边缘:@(e?.StartEdge(300, 300))<br />
+            (@(e?.StartPoints[0].ScreenX),@(e?.StartPoints[0].ScreenY))→(@(e?.MovePoints[0].ScreenX),@(e?.MovePoints[0].ScreenY))<br />
+            (@(e?.StartPoints[0].OffsetX),@(e?.StartPoints[0].OffsetY))→(@(e?.MovePoints[0].OffsetX),@(e?.MovePoints[0].OffsetY))
         </p>
         <p>@(tap) @(longpress) @(pan) @(swipe)</p>
         <p>@(pinch)</p>

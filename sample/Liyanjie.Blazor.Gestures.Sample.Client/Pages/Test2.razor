@@ -1,7 +1,7 @@
 ﻿@page "/2"
 
 <GestureArea @ref=@(gestureArea)
-             Enable=@(true) class="gesturearea">
+             Enable=@(true) class="gesturearea" style="width:300px;height:300px;">
     <ChildContent>
         <div class="gesturedata">
             <p>
@@ -10,7 +10,9 @@
                 角度:@(e?.Angle.ToString("0.0"))<br />
                 方向:@(e?.Direction)<br />
                 数量:@(e?.PointerCount)<br />
-                (@(e?.StartPoints[0].ScreenX),@(e?.StartPoints[0].ScreenY))→(@(e?.MovePoints[0].ScreenX),@(e?.MovePoints[0].ScreenY))
+                边缘:@(e?.StartEdge(300, 300))<br />
+                (@(e?.StartPoints[0].ScreenX),@(e?.StartPoints[0].ScreenY))→(@(e?.MovePoints[0].ScreenX),@(e?.MovePoints[0].ScreenY))<br />
+                (@(e?.StartPoints[0].OffsetX),@(e?.StartPoints[0].OffsetY))→(@(e?.MovePoints[0].OffsetX),@(e?.MovePoints[0].OffsetY))
             </p>
             <p>@(tap) @(longpress) @(pan) @(swipe)</p>
             <p>@(pinch)</p>
@@ -34,6 +36,7 @@
 
 @code {
     GestureArea? gestureArea;
+
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);

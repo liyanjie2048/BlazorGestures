@@ -12,7 +12,9 @@ Blazor手势识别
          @onpointerup=@(e=>gestureRecognizer?.PointerUp(e)) @onpointerup:preventDefault @onpointerup:stopPropagation
          @onpointerleave=@(e=>gestureRecognizer?.PointerLeave(e)) @onpointerleave:preventDefault @onpointerleave:stopPropagation>
     </div>
-    <GestureRecognizer @ref=@(gestureRecognizer)>
+    <GestureRecognizer @ref=@(gestureRecognizer)
+                       EdgeDistance="default 75"                //识别为边缘的距离(GestureEventArgs.StartEdge(width,height))
+                       Enable="default true">
         //Recognizers here
     </GestureRecognizer>
     @code{
@@ -21,7 +23,11 @@ Blazor手势识别
     ```
   - Also
     ```razor
-    <GestureArea class="gesturearea">
+    <GestureArea class="gesturearea"
+                 EdgeDistance="default 75"                      //识别为边缘的距离(GestureEventArgs.StartEdge(width,height))
+                 Enable="default true"
+                 PreventDefault="default true"
+                 StopPropagation="default true">
         <ChildContent>
             //ChildContent here
         </ChildContent>
@@ -34,8 +40,8 @@ Blazor手势识别
   - Usage
     ```razor
     <GestureRecognizer>
-        <LongPressGestureRecognizer MinDuration="default 500"  //识别为LongPress的最小millionseconds
-                                    MaxDistance="default 10"  //识别为Tap的最大pointermove distance
+        <LongPressGestureRecognizer MinDuration="default 500"   //识别为LongPress的最小millionseconds
+                                    MaxDistance="default 10"    //识别为Tap的最大pointermove distance
                                     OnLongPress="callback" />
     </GestureRecognizer>
     ```
@@ -51,7 +57,7 @@ Blazor手势识别
   - Usage
     ```razor
     <GestureRecognizer>
-        <PinchGestureRecognizer MinScale="default 0"  //触发PinchIn、PinchOut的最小scale
+        <PinchGestureRecognizer MinScale="default 0"            //触发PinchIn、PinchOut的最小scale
                                 OnPinch="callback"
                                 OnPinchEnd="callback"
                                 OnPinchIn="callback"
@@ -62,7 +68,7 @@ Blazor手势识别
   - Usage
     ```razor
     <GestureRecognizer>
-        <RotateGestureRecognizer MinAngle="default 10"  //触发RotateCW、RotateCCW的最小angle
+        <RotateGestureRecognizer MinAngle="default 10"          //触发RotateCW、RotateCCW的最小angle
                                  OnRotate="callback"
                                  OnRotateEnd="callback"
                                  OnRotateCW="callback"
@@ -74,8 +80,8 @@ Blazor手势识别
     ```razor
     <GestureRecognizer>
         <SwipeGestureRecognizer Direction="default GestureDirection.Horizontal"  //可以组合：Up|Down==Vertical or Left|Right == Horizontal or Up|Down|Left|Right == Horizontal|Vertical
-                                MaxDuration="default 300"  //识别SwipeUp、SwipeDown、SwipeLeft、SwipeRight的最大millionseconds
-                                MinDistance="default 20"  //识别SwipeUp、SwipeDown、SwipeLeft、SwipeRight的最大pointermove distance
+                                MaxDuration="default 300"       //识别SwipeUp、SwipeDown、SwipeLeft、SwipeRight的最大millionseconds
+                                MinDistance="default 20"        //识别SwipeUp、SwipeDown、SwipeLeft、SwipeRight的最大pointermove distance
                                 OnSwipe="callback"
                                 OnSwipeEnd="callback"
                                 OnSwipeUp="callback"
@@ -88,11 +94,11 @@ Blazor手势识别
   - Usage
     ```razor
     <GestureRecognizer>
-        <TapGestureRecognizer MaxDuration="default 200"  //识别DoubleTap的最大millionseconds
-                              MaxDistance="default 10"  //识别为Tap的最大pointermove distance
+        <TapGestureRecognizer MaxDuration="default 200"         //识别DoubleTap的最大millionseconds
+                              MaxDistance="default 10"          //识别为Tap的最大pointermove distance
                               OnTap="callback"
                               AllowDoubleTap="default true"
-                              MaxDoubleTapDistance="default 20"  识别为DoubleTap的最大pointermove distance
+                              MaxDoubleTapDistance="default 20" //识别为DoubleTap的最大pointermove distance
                               OnDoubleTap="callback" />
     </GestureRecognizer>
     ```

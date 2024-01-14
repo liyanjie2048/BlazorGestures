@@ -11,7 +11,7 @@ public record PinchGestureEventArgs : GestureEventArgs
     /// <param name="e"></param>
     /// <param name="type"></param>
     public PinchGestureEventArgs(GestureEventArgs e, string type)
-        : base(type, e.StartTime, e.StartPoints, e.MovePoints) { }
+        : base(type, e.StartTime, e.StartPoints, e.MovePoints, e.EdgeDistance) { }
 
     /// <summary>
     /// 

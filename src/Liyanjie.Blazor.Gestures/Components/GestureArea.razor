@@ -13,11 +13,14 @@
      @onpointerleave:stopPropagation=@(StopPropagation)>
     @(ChildContent)
 </div>
-<GestureRecognizer @ref=@(GestureRecognizer) Enable=@(Enable)>
+<GestureRecognizer @ref=@(GestureRecognizer)
+    EdgeDistance=@(EdgeDistance)
+    Enable=@(Enable)>
     @(Recognizers)
 </GestureRecognizer>
 
 @code {
+    [Parameter] public int EdgeDistance { get; set; } = 75;
     [Parameter] public bool Enable { get; set; } = true;
     [Parameter] public bool PreventDefault { get; set; } = true;
     [Parameter] public bool StopPropagation { get; set; } = true;

@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net8.0;</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<TargetFrameworks>net6.0;net8.0;</TargetFrameworks>
+		<VersionSuffix>20240115</VersionSuffix>
 		<Description>Blazor手势识别</Description>
 		<Copyright>© Liyanjie.net</Copyright>
 		<Authors>liyanjie2048@outlook.com</Authors>
